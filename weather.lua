@@ -1,7 +1,7 @@
 
 appid="Your Openweathermap appid"
-country="kr"
-city="Yeosu"
+country="Your country"
+city="Your City"
 imgoffset=0
 
 timeoffset=9*3600
