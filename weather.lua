@@ -14,7 +14,7 @@ function getweather()
       return
     end
     
-    to_send ="GET /data/2.5/forecast?q="..city..","..country.."&appid="..appid.." HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
+    to_send ="GET /data/2.5/forecast?q="..city..","..country.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
     last_remain=""
 
     sk=net.createConnection(net.TCP, 0)
@@ -45,7 +45,7 @@ function getweather()
               --dayw=str2epoch(t["dt_txt"])
               dayw=tonumber(t["dt"])
               if imgoffset<3 and dayw+3*3600>=rtm and dayw-6*3600<=rtm then
-                  tem=t.main["temp"]-273.15
+                  tem=(t.main["temp_max"]+t.main["temp_min"])/2
                   --print("temp",tem)
                   hum=t.main["humidity"]
                   --print("humidity",hum)
