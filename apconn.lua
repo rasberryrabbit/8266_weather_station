@@ -5,10 +5,43 @@ wifi.setmode(wifi.STATION)
 wifi.sta.config(station_cfg)
 wifi.sta.connect()
 
+conntry=15
+aptried={}
+
 conntmr=tmr.create()
+
+function listap(t)
+  for ssid,v in pairs(t) do
+    local authmode, rssi, bssid, channel = string.match(v, "([^,]+),([^,]+),([^,]+),([^,]+)")
+    if (not aptried[ssid]) and authmode=="0" then
+      aptried.insert(ssid,0)
+      wifi.setmode(wifi.STATION)
+      station_cfg.ssid=ssid
+      station_cfg.pwd=""
+      wifi.sta.config(station_cfg)
+      wifi.sta.connect()
+      conntmr:start()
+      conntry=30
+      break
+    end
+  end
+  if conntry==0 then
+    MsgSystem("No Internet")
+  end
+end
+
 conntmr:register(2000,tmr.ALARM_AUTO,function()
     if wifi.sta.getip() == nil then
         MsgSystem("IP unavailable, Wait")
+        conntry=conntry-1
+        if conntry==0 then
+          conntmr:stop()
+          
+          -- try reconnect other AP
+          wifi.disconnect()
+          wifi.setmode(wifi.STATIONAP)
+          wifi.sta.getap(0,listap)
+        end
     else
         conntmr:stop()
         conntmr:unregister()
