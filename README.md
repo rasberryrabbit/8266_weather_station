@@ -11,9 +11,9 @@ These are three configuration in lua script.
 3. In "weather.lua", you must specify your local time offset from GMT time.
 
 
-SDA -> 8266 pin 1
-SCL -> 8266 pin 2
-VCC -> 3.3v
+SDA -> 8266 pin 1,
+SCL -> 8266 pin 2,
+VCC -> 3.3v,
 GND -> GND
 
-Weather information update every 5 minutes and display until 9 hours informations.
+Weather information update every 5 minutes and display to post 6 hours informations.
