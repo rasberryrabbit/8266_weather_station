@@ -1,6 +1,12 @@
 station_cfg={}
-station_cfg.ssid="Your wifi"
-station_cfg.pwd="Your wifi password"
+station_cfg.ssid=""
+station_cfg.pwd=""
+if file.list()["eus_params.lua"] then
+  p=dofile("eus_params.lua")
+  station_cfg.ssid=p.wifi_ssid
+  station_cfg.pwd=p.wifi_password
+end
+
 wifi.setmode(wifi.STATION)
 wifi.sta.config(station_cfg)
 wifi.sta.connect()
@@ -26,7 +32,19 @@ function listap(t)
     end
   end
   if conntry==0 then
-    MsgSystem("No Internet")
+    MsgSystem("No Internet.")
+    wifi.sta.disconnect()
+    wifi.setmode(wifi.STATIONAP)
+    wifi.ap.config({ssid="Weather_"..node.chipid(), auth=wifi.OPEN})
+    enduser_setup.manual(true)
+    enduser_setup.start(
+      function()
+        print("Connected to WiFi as:" .. wifi.sta.getip())
+      end,
+      function(err, str)
+        print("enduser_setup: Err #" .. err .. ": " .. str)
+      end
+    )
   end
 end
 
