@@ -27,7 +27,7 @@ function listap(t)
       wifi.sta.config(station_cfg)
       wifi.sta.connect()
       conntmr:start()
-      conntry=30
+      conntry=15
       break
     end
   end
