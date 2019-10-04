@@ -2,6 +2,9 @@
 appid="Your Openweathermap appid"
 country="Your country"
 city="Your City"
+if file.list()["weconfig.lua"] then
+  dofile("weconfig.lua")
+end
 imgoffset=0
 
 timeoffset=9*3600
