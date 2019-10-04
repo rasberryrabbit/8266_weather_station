@@ -22,12 +22,12 @@ end
 function DrawXBM(x,y,w,h,str)
   if file.list()[str]~=nil then
       f=file.open(str,"r")
-      buf=f:read()
+      local buf=f:read()
       f:close()
-      obuf=""
+      local obuf=""
       i,j=string.find(buf,"%s+\=%s+{")
       if i~=nil then
-        buf=string.sub(buf,j)
+        local buf=string.sub(buf,j)
         for wv in string.gmatch(buf,"0x[^%s,\,]+") do
           v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
           obuf=obuf..string.char(v)
