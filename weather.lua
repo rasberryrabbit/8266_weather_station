@@ -48,7 +48,8 @@ function getweather()
         tem=(t.main["temp_max"]+t.main["temp_min"])/2
         hum=t.main["humidity"]
         weicon="we_"..string.sub(t.weather[1]["icon"],1,-2).."d.xbm"
-        weinfo["h0"]={temp=tem, humi=hum, icon=weicon}
+        weinfo["h0"]={temp=tem, humi=hum, icon=weicon, wtime=rtm}
+        timeoffset=t["timezone"]
         print("-current-")
     end)
     ck:on("connection", function(sck, cwinfo)
@@ -100,7 +101,7 @@ function getweather()
                   tem=(t.main["temp_max"]+t.main["temp_min"])/2
                   hum=t.main["humidity"]
                   weicon="we_"..string.sub(t.weather[1]["icon"],1,-2).."d.xbm"
-                  weinfo[datastr]={temp=tem, humi=hum, icon=weicon}
+                  weinfo[datastr]={temp=tem, humi=hum, icon=weicon, wtime=dayw}
                   imgoffset=imgoffset+1
                   print("-forcast-")
               end
@@ -139,7 +140,11 @@ function getweather()
             datastr=string.format("h%d",i)
             DrawXBM(i*40+4,64-32,32,32,weinfo[datastr]["icon"])
             disp:drawStr(i*40+5,20,string.format("%2.1f",weinfo[datastr]["temp"]))
+            tm = rtctime.epoch2cal(weinfo[datastr]["wtime"]+timeoffset)
             disp:drawStr(i*40+5,30,string.format("%2d%%",weinfo[datastr]["humi"]))
+            if i>0 then
+              disp:drawStr(i*40+5,40,string.format("%02d",tm["hour"]))
+            end
             disp:sendBuffer()
         end
         weinfo={}
