@@ -24,7 +24,7 @@ end
 
 function getweather()
     rtm=rtctime.get()
-    tm = rtctime.epoch2cal(rtm)
+    tm=rtctime.epoch2cal(rtm)
     if tm["year"]==1970 then
       MsgSystem("Wait Time Sync")
       return
@@ -53,7 +53,6 @@ function getweather()
         print("-current-")
     end)
     ck:on("connection", function(sck, cwinfo)
-        last_remain=""
         ck_header=""
         sck:send(ck_to_send)
     end)
@@ -79,7 +78,7 @@ function getweather()
         epos=nil
         slen=string.len(c)
         local i,j
-        while cpos<slen do
+        while cpos<=slen do
           i, j = string.find(c,"\{\"dt\"",cpos)
           if i==nil then
             i, j = string.find(c,"\,\"city\"",cpos)
@@ -104,6 +103,11 @@ function getweather()
                   weinfo[datastr]={temp=tem, humi=hum, icon=weicon, wtime=dayw}
                   imgoffset=imgoffset+1
                   print("-forcast-")
+              else
+                if imgoffset>2 then
+                  sck:close()
+                  print("-close-")
+                end
               end
             end
             cpos=i+1
@@ -121,36 +125,10 @@ function getweather()
     waithttp:register(1000,tmr.ALARM_AUTO,function()
       if weinfo["h0"] then
         waithttp:unregister()
-        ck:close()        
         sk:connect(80,"api.openweathermap.org")
       end
     end)
     waithttp:start()
-
-    -- draw weather info
-    drawtimer=tmr.create()
-    drawtimer:register(1000,tmr.ALARM_AUTO,function()
-      if weinfo["h0"] and weinfo["h1"] and weinfo["h2"] then
-        sk:close()
-        drawtimer:unregister()
-        disp:setDrawColor(0)
-        disp:drawBox(0,10,127,31)
-        disp:setDrawColor(1)
-        for i=0,2 do
-            datastr=string.format("h%d",i)
-            DrawXBM(i*40+4,64-32,32,32,weinfo[datastr]["icon"])
-            disp:drawStr(i*40+5,20,string.format("%2.1f",weinfo[datastr]["temp"]))
-            tm = rtctime.epoch2cal(weinfo[datastr]["wtime"]+timeoffset)
-            disp:drawStr(i*40+5,30,string.format("%2d%%",weinfo[datastr]["humi"]))
-            if i>0 then
-              disp:drawStr(i*40+5,40,string.format("%02d",tm["hour"]))
-            end
-            disp:sendBuffer()
-        end
-        weinfo={}
-      end
-    end)
-    drawtimer:start()
 end
 
 weathertmr=tmr.create()
@@ -160,8 +138,30 @@ end)
 
 timedisp=tmr.create()
 timedisp:register(1000, tmr.ALARM_AUTO, function()
-  tm = rtctime.epoch2cal(rtctime.get()+timeoffset)
+  -- draw local time
+  local tm = rtctime.epoch2cal(rtctime.get()+timeoffset)
   MsgSystem(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
+  -- draw weather info
+  if weinfo["h0"] and weinfo["h1"] and weinfo["h2"] then
+    timedisp:stop()
+    collectgarbage()
+    disp:setDrawColor(0)
+    disp:drawBox(0,10,127,31)
+    disp:setDrawColor(1)
+    for i=0,2 do
+        local datastr=string.format("h%d",i)
+        DrawXBM(i*40+4,64-32,32,32,weinfo[datastr]["icon"])
+        disp:drawStr(i*40+5,20,string.format("%2.1f",weinfo[datastr]["temp"]))
+        disp:drawStr(i*40+5,30,string.format("%2d%%",weinfo[datastr]["humi"]))
+        if i>0 then
+          local tm = rtctime.epoch2cal(weinfo[datastr]["wtime"]+timeoffset)
+          disp:drawStr(i*40+5,40,string.format("%02d",tm["hour"]))
+        end
+    end
+    disp:sendBuffer()
+    weinfo={}
+    timedisp:start()
+  end
 end)
 
 timesynctmr=tmr.create()

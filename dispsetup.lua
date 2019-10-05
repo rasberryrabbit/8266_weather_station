@@ -32,7 +32,9 @@ function DrawXBM(x,y,w,h,str)
           v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
           obuf=obuf..string.char(v)
         end
+        buf=""
         disp:drawXBM(x,y,w,h,obuf)
+        obuf=""
       end
   else
     disp:drawBox(x,y,w,h)
