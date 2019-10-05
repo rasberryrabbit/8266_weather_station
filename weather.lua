@@ -95,7 +95,7 @@ function getweather()
             if spos~=nil then
               local t=sjson.decode(string.sub(c,spos,epos-2))
               dayw=tonumber(t["dt"])
-              if imgoffset<3 and dayw>rtm and dayw-6*3600<rtm then
+              if imgoffset<3 and dayw>rtm and dayw-6*3600<=rtm then
                   datastr=string.format("h%d",imgoffset)
                   tem=(t.main["temp_max"]+t.main["temp_min"])/2
                   hum=t.main["humidity"]
