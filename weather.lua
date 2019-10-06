@@ -37,6 +37,7 @@ function getweather()
     ck_header=""
     ck=net.createConnection(net.TCP, 0)
     ck:on("receive", function(sck, cwinfo)
+        -- strip header
         if ck_header=="" then
           i=HttpGetHeader(cwinfo)
           if i~=nil then
@@ -50,6 +51,7 @@ function getweather()
         weicon="we_"..string.sub(t.weather[1]["icon"],1,-2).."d.xbm"
         weinfo["h0"]={temp=tem, humi=hum, icon=weicon, wtime=rtm}
         timeoffset=t["timezone"]
+        sck:close()
         print("-current-")
     end)
     ck:on("connection", function(sck, cwinfo)
@@ -157,8 +159,8 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
           local tm = rtctime.epoch2cal(weinfo[datastr]["wtime"]+timeoffset)
           disp:drawStr(i*40+5,40,string.format("%02d",tm["hour"]))
         end
+        disp:sendBuffer()
     end
-    disp:sendBuffer()
     weinfo={}
     timedisp:start()
   end
