@@ -32,16 +32,15 @@ function getweather()
     
     -- current weather
     ck_to_send ="GET /data/2.5/weather?q="..city..","..country.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
-    last_remain=""
+    ck_length=-1
 
-    ck_header=""
     ck=net.createConnection(net.TCP, 0)
     ck:on("receive", function(sck, cwinfo)
         -- strip header
-        if ck_header=="" then
+        if ck_length==-1 then
           i=HttpGetHeader(cwinfo)
           if i~=nil then
-            ck_header=" " --string.sub(cwinfo,1,i-1)
+            ck_length=tonumber(string.match(cwinfo,"Content-Length:%s+(%d+)")) --string.sub(cwinfo,1,i-1)
             cwinfo=string.sub(cwinfo,i,-1)
           end
         end
@@ -55,22 +54,21 @@ function getweather()
         print("-current-")
     end)
     ck:on("connection", function(sck, cwinfo)
-        ck_header=""
+        ck_length=-1
         sck:send(ck_to_send)
     end)
     ck:connect(80,"api.openweathermap.org")
     
     -- forecast
     sk_to_send ="GET /data/2.5/forecast?q="..city..","..country.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
-    last_remain=""
+    sk_length=-1
 
-    sk_header=""
     sk=net.createConnection(net.TCP, 0)
     sk:on("receive", function(sck, c)
-        if sk_header=="" then
+        if sk_length==-1 then
           i=HttpGetHeader(c)
           if i~=nil then
-            sk_header=" " --string.sub(c,1,i-1)
+            sk_length=tonumber(string.match(c,"Content-Length:%s+(%d+)")) --string.sub(c,1,i-1)
             c=string.sub(c,i,-1)
           end
         end
@@ -118,7 +116,7 @@ function getweather()
     end)
     sk:on("connection", function(sck, c)
         last_remain=""
-        sk_header=""
+        sk_length=-1
         imgoffset=1
         sck:send(sk_to_send)
     end)
