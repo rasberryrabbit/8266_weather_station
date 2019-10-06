@@ -8,7 +8,7 @@ These are three configuration in lua script,
 
 1. In "apconn.lua", you must specify SSID/Password or using enduser_setup.
 2. In "weather.lua", yout must specify OpenWeatherMap AppId and country and city.
-3. In "weather.lua", you must specify your local time offset from GMT time.
+3. In "weather.lua", you must specify your local time offset from GMT time. (Set automatically in weather information)
 
 wifi Enduser_setup,
 
@@ -16,7 +16,7 @@ wifi Enduser_setup,
 2. connect wifi to "weather_xxxxxx"
 3. Enter URL "192.168.4.1"
 4. Specify SSID and Password
-5. Reboot
+5. Reboot or wait reboot in 5 minutes
 
 SDA -> 8266 pin 1,
 SCL -> 8266 pin 2,
