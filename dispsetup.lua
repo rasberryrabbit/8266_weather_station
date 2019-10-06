@@ -43,18 +43,6 @@ function DrawXBM(x,y,w,h,str)
   end
 end
 
-function unix2date(t)
-    local jd, f, e, h, y, m, d
-    jd = t / 86400 + 2440588
-    f = jd + 1401 + (((4 * jd + 274277) / 146097) * 3) / 4 - 38
-    e = 4 * f + 3
-    h = 5 * ((e % 1461) / 4) + 2
-    d = (h % 153) / 5 + 1
-    m = (h / 153 + 2) % 12 + 1
-    y = e / 1461 - 4716 + (14 - m) / 12
-    return t%86400/3600, t%3600/60, t%60, y, m, d, jd%7+1
-end
-
 function date2unix(y, m, d, h, n, s)
     local a, jd
     a = (14 - m) / 12

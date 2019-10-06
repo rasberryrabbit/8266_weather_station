@@ -16,6 +16,11 @@ aptried={}
 
 conntmr=tmr.create()
 
+reboottmr=tmr.create()
+reboottmr:register(300000,tmr.ALARM_SINGLE,function()
+  node.restart()
+end)
+    
 function listap(t)
   for ssid,v in pairs(t) do
     local authmode, rssi, bssid, channel = string.match(v, "([^,]+),([^,]+),([^,]+),([^,]+)")
@@ -39,12 +44,13 @@ function listap(t)
     enduser_setup.manual(true)
     enduser_setup.start(
       function()
-        print("Connected to WiFi as:" .. wifi.sta.getip())
+        print("WiFi as:" .. wifi.sta.getip())
       end,
       function(err, str)
-        print("enduser_setup: Err #" .. err .. ": " .. str)
+        print("Err #" .. err .. ": " .. str)
       end
     )
+    reboottmr:start()
   end
 end
 
@@ -53,29 +59,18 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
         MsgSystem("IP unavailable, Wait")
         conntry=conntry-1
         if conntry==0 then
-          conntmr:stop()
+          conntmr:unregister()
           
-          -- try reconnect other AP
-          --wifi.setmode(wifi.STATIONAP)
           wifi.sta.getap(0,listap)
         end
     else
-        conntmr:stop()
         conntmr:unregister()
         print("ESP8266 mode is: " .. wifi.getmode())
         print("The module MAC address is: " .. wifi.ap.getmac())
         MsgSystem("IP: "..wifi.sta.getip())
-        
-        --local udp_response = wifi.sta.getip().."\n"..string.format("%x",node.chipid()).."\nWEATHER\n"
-        --udp50k = net.createUDPSocket()
-        --udpcasttmr = tmr.create()
-        --udpcasttmr:register(3000, tmr.ALARM_AUTO, function()
-        --  udp50k:send(50000, wifi.sta.getbroadcast(), udp_response)
-        --end)
-        --udpcasttmr:start()
-        
+
         sntp.sync(nil,nil,nil,1)
-        
+
         if file.list()["weather.lua"]~=nil then
           dofile("weather.lua")
         end
