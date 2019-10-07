@@ -46,6 +46,7 @@ function listap(t)
     enduser_setup.start(
       function()
         print("WiFi as:" .. wifi.sta.getip())
+        node.restart()
       end,
       function(err, str)
         print("Err #" .. err .. ": " .. str)
