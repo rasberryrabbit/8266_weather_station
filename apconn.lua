@@ -49,7 +49,7 @@ function listap(t)
         --node.restart()
       end,
       function(err, str)
-        print("Err #" .. err .. ": " .. str)
+        --print("Err #" .. err .. ": " .. str)
       end
     )
     reboottmr:start()
@@ -67,8 +67,8 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
         end
     else
         conntmr:unregister()
-        print("ESP8266 mode is: " .. wifi.getmode())
-        print("The module MAC address is: " .. wifi.ap.getmac())
+        --print("WiFi mode: " .. wifi.getmode())
+        print("MAC: " .. wifi.ap.getmac())
         MsgSystem("IP: "..wifi.sta.getip())
 
         sntp.sync(nil,nil,nil,1)
