@@ -65,6 +65,7 @@ function getweather()
     sk=net.createConnection(net.TCP, 0)
     sk:on("receive", function(sck, c)
         if weinfo["h2"] then
+          c=nil
           return
         end
         if sk_length==-1 then
@@ -77,6 +78,7 @@ function getweather()
         c=last_remain..c
         last_remain=""
         if imgoffset>2 then
+          c=nil
           return
         end
         cpos=1
