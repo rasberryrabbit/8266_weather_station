@@ -73,6 +73,7 @@ function getweather()
           end
         end
         c=last_remain..c
+        last_remain=""
         cpos=1
         spos=1
         epos=nil
@@ -144,7 +145,7 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
   -- draw weather info
   if weinfo["h0"] and weinfo["h1"] and weinfo["h2"] then
     timedisp:stop()
-    collectgarbage()
+    --collectgarbage()
     disp:setDrawColor(0)
     disp:drawBox(0,10,127,31)
     disp:setDrawColor(1)
