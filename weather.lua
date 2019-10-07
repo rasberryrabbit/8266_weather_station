@@ -49,7 +49,7 @@ function getweather()
         weicon="we_"..string.sub(t.weather[1]["icon"],1,-2).."d.xbm"
         weinfo["h0"]={temp=tem, humi=hum, icon=weicon, wtime=rtm}
         timeoffset=t["timezone"]
-        pcall(function() sck:close() end)
+        sck:close()
         print("-current-")
     end)
     ck:on("connection", function(sck, cwinfo)
@@ -64,6 +64,9 @@ function getweather()
 
     sk=net.createConnection(net.TCP, 0)
     sk:on("receive", function(sck, c)
+        if weinfo["h2"] then
+          return
+        end
         if sk_length==-1 then
           i=HttpGetHeader(c)
           if i~=nil then
@@ -105,8 +108,9 @@ function getweather()
                   print("-forcast-")
               else
                 if imgoffset>2 then
-                  pcall(function() sck:close() end)
+                  sk:close()
                   print("-close-")
+                  break
                 end
               end
             end
