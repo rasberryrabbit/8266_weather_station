@@ -26,7 +26,6 @@ function getweather()
     rtm=rtctime.get()
     tm=rtctime.epoch2cal(rtm)
     if tm["year"]==1970 then
-      MsgSystem("Wait Time Sync")
       return
     end
     
@@ -170,6 +169,7 @@ timesynctmr:register(1000, tmr.ALARM_AUTO, function()
     tm = rtctime.epoch2cal(rtctime.get())
     if tm["year"]==1970 then
       MsgSystem("Wait Time Sync")
+      pcall(function() sntp.sync(nil,nil,nil,1) end)
     else
       timesynctmr:unregister()
       timedisp:start()
