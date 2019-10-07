@@ -23,9 +23,10 @@ end)
     
 function listap(t)
   for ssid,v in pairs(t) do
-    local authmode, rssi, bssid, channel = string.match(v, "([^,]+),([^,]+),([^,]+),([^,]+)")
+    local authmode, _, _, _ = string.match(v, "([^,]+),([^,]+),([^,]+),([^,]+)")
     if (not aptried[ssid]) and authmode=="0" then
       aptried[ssid]=0
+      wifi.sta.disconnect()
       wifi.setmode(wifi.STATION)
       station_cfg.ssid=ssid
       station_cfg.pwd=""
@@ -59,7 +60,7 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
         MsgSystem("IP unavailable, Wait")
         conntry=conntry-1
         if conntry==0 then
-          conntmr:unregister()
+          conntmr:stop()
           
           wifi.sta.getap(0,listap)
         end
