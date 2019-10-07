@@ -173,9 +173,9 @@ timesynctmr:register(1000, tmr.ALARM_AUTO, function()
     else
       timesynctmr:unregister()
       timedisp:start()
-      getweather()      
+      getweather()
+      weathertmr:start()
     end
 end)
 
 timesynctmr:start()
-weathertmr:start()
