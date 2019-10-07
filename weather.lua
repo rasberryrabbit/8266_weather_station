@@ -30,7 +30,7 @@ function getweather()
     end
     
     -- current weather
-    ck_to_send ="GET /data/2.5/weather?q="..city..","..country.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
+    to_send=""
     ck_length=-1
 
     ck=net.createConnection(net.TCP, 0)
@@ -54,12 +54,12 @@ function getweather()
     end)
     ck:on("connection", function(sck, cwinfo)
         ck_length=-1
-        sck:send(ck_to_send)
+        sck:send(to_send)
     end)
+    to_send ="GET /data/2.5/weather?q="..city..","..country.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
     ck:connect(80,"api.openweathermap.org")
-    
+
     -- forecast
-    sk_to_send ="GET /data/2.5/forecast?q="..city..","..country.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
     sk_length=-1
 
     sk=net.createConnection(net.TCP, 0)
@@ -108,7 +108,7 @@ function getweather()
                   print("-forcast-")
               else
                 if imgoffset>2 then
-                  sk:close()
+                  sck:close()
                   print("-close-")
                   break
                 end
@@ -122,13 +122,15 @@ function getweather()
         last_remain=""
         sk_length=-1
         imgoffset=1
-        sck:send(sk_to_send)
+        sck:send(to_send)
     end)
+
     -- wait current weather
     waithttp=tmr.create()
     waithttp:register(1000,tmr.ALARM_AUTO,function()
       if weinfo["h0"] then
         waithttp:unregister()
+        to_send ="GET /data/2.5/forecast?q="..city..","..country.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
         sk:connect(80,"api.openweathermap.org")
       end
     end)
