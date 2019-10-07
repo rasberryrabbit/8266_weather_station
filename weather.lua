@@ -49,7 +49,7 @@ function getweather()
         weicon="we_"..string.sub(t.weather[1]["icon"],1,-2).."d.xbm"
         weinfo["h0"]={temp=tem, humi=hum, icon=weicon, wtime=rtm}
         timeoffset=t["timezone"]
-        sck:close()
+        pcall(function() sck:close() end)
         print("-current-")
     end)
     ck:on("connection", function(sck, cwinfo)
@@ -105,7 +105,7 @@ function getweather()
                   print("-forcast-")
               else
                 if imgoffset>2 then
-                  sck:close()
+                  pcall(function() sck:close() end)
                   print("-close-")
                 end
               end
