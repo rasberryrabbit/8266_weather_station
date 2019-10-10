@@ -107,7 +107,7 @@ function getweather()
                   datastr=string.format("h%d",imgoffset)
                   tem=(t.main["temp_max"]+t.main["temp_min"])/2
                   hum=t.main["humidity"]
-                  weicon="we_"..string.sub(t.weather[1]["icon"],1,-2).."d.xbm"
+                  weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
                   weinfo[datastr]={temp=tem, humi=hum, icon=weicon, wtime=dayw}
                   imgoffset=imgoffset+1
                   print("-forcast-")
