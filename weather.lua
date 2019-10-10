@@ -46,7 +46,7 @@ function getweather()
         local t=sjson.decode(cwinfo)
         tem=(t.main["temp_max"]+t.main["temp_min"])/2
         hum=t.main["humidity"]
-        weicon="we_"..string.sub(t.weather[1]["icon"],1,-2).."d.xbm"
+        weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
         weinfo["h0"]={temp=tem, humi=hum, icon=weicon, wtime=rtm}
         timeoffset=t["timezone"]
         --sck:close()
