@@ -1,9 +1,8 @@
 
-appid="Your Openweathermap appid"
-country="Your country"
-city="Your City"
-lat=nil
-lon=nil
+appid=""
+lat=""
+lon=""
+to_send=""
 
 if file.list()["weconfig.lua"] then
   dofile("weconfig.lua")
@@ -33,7 +32,6 @@ function getweather()
     end
     
     -- current weather
-    to_send=""
     ck_length=-1
 
     ck=net.createConnection(net.TCP, 0)
@@ -58,14 +56,9 @@ function getweather()
     ck:on("connection", function(sck, cwinfo)
         ck_length=-1
         sck:send(to_send)
+        to_send=nil
     end)
-    to_send ="GET /data/2.5/weather?"
-    if lat==nil or lon==nil then
-      to_send=to_send.."q="..city..","..country
-    else
-      to_send=to_send.."lat="..lat.."&lon="..lon
-    end
-    to_send=to_send.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
+    to_send="GET /data/2.5/weather?lat="..lat.."&lon="..lon.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
     ck:connect(80,"api.openweathermap.org")
 
     -- forecast
@@ -131,6 +124,7 @@ function getweather()
         sk_length=-1
         imgoffset=1
         sck:send(to_send)
+        to_send=nil
     end)
 
     -- wait current weather
@@ -138,13 +132,7 @@ function getweather()
     waithttp:register(1000,tmr.ALARM_AUTO,function()
       if weinfo["h0"] then
         waithttp:unregister()
-        to_send ="GET /data/2.5/forecast?"
-        if lat==nil or lon==nil then
-          to_send=to_send.."q="..city..","..country
-        else
-          to_send=to_send.."lat="..lat.."&lon="..lon
-        end
-        to_send=to_send.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
+        to_send="GET /data/2.5/forecast?lat="..lat.."&lon="..lon.."&appid="..appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
         sk:connect(80,"api.openweathermap.org")
       end
     end)
