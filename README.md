@@ -7,7 +7,7 @@ Simple weather station ESP8266 with 0.96 i2c OLED
 These are three configuration in lua script,
 
 1. In "apconn.lua", you must specify SSID/Password or using enduser_setup.
-2. In "weather.lua", yout must specify OpenWeatherMap AppId and country and city.
+2. In "weather.lua", yout must specify OpenWeatherMap AppId and latitude, longitude.
 3. In "weather.lua", you must specify your local time offset from GMT time. (Set automatically in weather information)
 
 wifi Enduser_setup,
