@@ -163,8 +163,8 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
     for i=0,2 do
         local datastr=string.format("h%d",i)
         DrawXBM(i*32+(i*12),64-32,32,32,weinfo[datastr]["icon"])
-        disp:drawStr(i*32+(i*12),20,string.format("%2d %2dm",(weinfo[datastr]["tempmin"]+weinfo[datastr]["tempmax"])/2,weinfo[datastr]["wind"]))
-        disp:drawStr(i*32+(i*12),30,string.format("%2d%%",weinfo[datastr]["humi"]))
+        disp:drawStr(i*32+(i*12),20,string.format("%2d",(weinfo[datastr]["tempmin"]+weinfo[datastr]["tempmax"])/2))
+        disp:drawStr(i*32+(i*12),30,string.format("%2d%% %.2dm",weinfo[datastr]["humi"],weinfo[datastr]["wind"]))
         if i>0 then
           local tm = rtctime.epoch2cal(weinfo[datastr]["wtime"]+timeoffset)
           disp:drawStr(i*32+(i*12),40,string.format("%02d",tm["hour"]))
