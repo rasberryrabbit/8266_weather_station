@@ -47,9 +47,10 @@ function getweather()
         local t=sjson.decode(cwinfo)
         temmin=t.main["temp_min"]
         temmax=t.main["temp_max"]
+        windspd=t.wind["speed"]
         hum=t.main["humidity"]
         weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
-        weinfo["h0"]={tempmin=temmin, tempmax=temmax, humi=hum, icon=weicon, wtime=rtm}
+        weinfo["h0"]={tempmin=temmin, tempmax=temmax, humi=hum, icon=weicon, wtime=rtm, wind=windspd}
         timeoffset=t["timezone"]
         --sck:close()
         print("-current-")
@@ -110,9 +111,10 @@ function getweather()
                   datastr=string.format("h%d",imgoffset)
                   temmin=t.main["temp_min"]
                   temmax=t.main["temp_max"]
+                  windspd=t.wind["speed"]
                   hum=t.main["humidity"]
                   weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
-                  weinfo[datastr]={tempmin=temmin, tempmax=temmax, humi=hum, icon=weicon, wtime=dayw}
+                  weinfo[datastr]={tempmin=temmin, tempmax=temmax, humi=hum, icon=weicon, wtime=dayw, wind=windspd}
                   imgoffset=imgoffset+1
                   print("-forcast-")
               end
@@ -161,7 +163,7 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
     for i=0,2 do
         local datastr=string.format("h%d",i)
         DrawXBM(i*32+(i*12),64-32,32,32,weinfo[datastr]["icon"])
-        disp:drawStr(i*32+(i*12),20,string.format("%2.0d/%2.0d",weinfo[datastr]["tempmin"],weinfo[datastr]["tempmax"]))
+        disp:drawStr(i*32+(i*12),20,string.format("%2d %2dm",(weinfo[datastr]["tempmin"]+weinfo[datastr]["tempmax"])/2,weinfo[datastr]["wind"]))
         disp:drawStr(i*32+(i*12),30,string.format("%2d%%",weinfo[datastr]["humi"]))
         if i>0 then
           local tm = rtctime.epoch2cal(weinfo[datastr]["wtime"]+timeoffset)
