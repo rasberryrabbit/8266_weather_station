@@ -45,10 +45,11 @@ function getweather()
           end
         end
         local t=sjson.decode(cwinfo)
-        tem=(t.main["temp_max"]+t.main["temp_min"])/2
+        temmin=t.main["temp_min"]
+        temmax=t.main["temp_max"]
         hum=t.main["humidity"]
         weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
-        weinfo["h0"]={temp=tem, humi=hum, icon=weicon, wtime=rtm}
+        weinfo["h0"]={tempmin=temmin, tempmax=temmax, humi=hum, icon=weicon, wtime=rtm}
         timeoffset=t["timezone"]
         --sck:close()
         print("-current-")
@@ -107,10 +108,11 @@ function getweather()
               dayw=tonumber(t["dt"])
               if imgoffset<3 and dayw>rtm and dayw-6*3600<=rtm then
                   datastr=string.format("h%d",imgoffset)
-                  tem=(t.main["temp_max"]+t.main["temp_min"])/2
+                  temmin=t.main["temp_min"]
+                  temmax=t.main["temp_max"]
                   hum=t.main["humidity"]
                   weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
-                  weinfo[datastr]={temp=tem, humi=hum, icon=weicon, wtime=dayw}
+                  weinfo[datastr]={tempmin=temmin, tempmax=temmax, humi=hum, icon=weicon, wtime=dayw}
                   imgoffset=imgoffset+1
                   print("-forcast-")
               end
@@ -158,12 +160,12 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
     disp:setDrawColor(1)
     for i=0,2 do
         local datastr=string.format("h%d",i)
-        DrawXBM(i*40+4,64-32,32,32,weinfo[datastr]["icon"])
-        disp:drawStr(i*40+5,20,string.format("%2.1f",weinfo[datastr]["temp"]))
-        disp:drawStr(i*40+5,30,string.format("%2d%%",weinfo[datastr]["humi"]))
+        DrawXBM(i*32+(i*12),64-32,32,32,weinfo[datastr]["icon"])
+        disp:drawStr(i*32+(i*12),20,string.format("%2.0d/%2.0d",weinfo[datastr]["tempmin"],weinfo[datastr]["tempmax"]))
+        disp:drawStr(i*32+(i*12),30,string.format("%2d%%",weinfo[datastr]["humi"]))
         if i>0 then
           local tm = rtctime.epoch2cal(weinfo[datastr]["wtime"]+timeoffset)
-          disp:drawStr(i*40+5,40,string.format("%02d",tm["hour"]))
+          disp:drawStr(i*32+(i*12),40,string.format("%02d",tm["hour"]))
         end
         disp:sendBuffer()
     end
