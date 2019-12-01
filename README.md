@@ -8,8 +8,8 @@ These are three configuration in lua script,
 
 1. In "apconn.lua", you must specify SSID/Password or using enduser_setup.
 2. In "weather.lua", yout must specify OpenWeatherMap AppId and latitude, longitude.
-  It can also specify in "weconfig.lua" file.
-3. In "weather.lua", you must specify your local time offset from GMT time. (Set automatically in weather information)
+  It can also specify in "weconfig.lua" file. (_G.appid="" _G.lat="" _G.lon="127.74")
+3. In "weather.lua", you specify your local time offset from GMT time. (Set automatically in weather information)
 
 wifi Enduser_setup,
 
