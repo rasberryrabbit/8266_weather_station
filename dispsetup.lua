@@ -11,7 +11,6 @@ disp:setFont(u8g2.font_6x10_tf)
 u8g2_fontHeight=10
 
 function MsgSystem(str)
-  local w=disp:getStrWidth(str)
   disp:setDrawColor(0)
   disp:drawBox(0,0,128,u8g2_fontHeight+1)
   disp:setDrawColor(1)
@@ -38,8 +37,8 @@ function DrawXBM(x,y,w,h,str)
     end
   else
     disp:drawBox(x,y,w,h)
+    disp:drawStr(x,y,'?')
     disp:sendBuffer()
-    print(str)
   end
 end
 
