@@ -25,7 +25,9 @@ function listap(t)
     end
   end
   if conntry==0 then
-    MsgSystem("No Internet.")
+    if connectionMode then
+      MsgSystem("No Internet.")
+    end
     wifi.sta.disconnect()
     wifi.setmode(wifi.STATIONAP)
     wifi.ap.config({ssid="Weather_"..node.chipid(), auth=wifi.OPEN})
