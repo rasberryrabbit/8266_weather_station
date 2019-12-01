@@ -25,9 +25,6 @@ function listap(t)
     end
   end
   if conntry==0 then
-    if connectionMode then
-      MsgSystem("No Internet.")
-    end
     wifi.sta.disconnect()
     wifi.setmode(wifi.STATIONAP)
     wifi.ap.config({ssid="Weather_"..node.chipid(), auth=wifi.OPEN})
@@ -42,11 +39,12 @@ function listap(t)
       end
     )
     if connectionMode then
-        reboottmr=tmr.create()
-        reboottmr:register(300000,tmr.ALARM_SINGLE,function()
-          node.restart()
-        end)
-        reboottmr:start()
+      MsgSystem("No Internet.")
+      reboottmr=tmr.create()
+      reboottmr:register(300000,tmr.ALARM_SINGLE,function()
+        node.restart()
+      end)
+      reboottmr:start()
     end
   end
 end

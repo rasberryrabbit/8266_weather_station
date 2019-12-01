@@ -56,6 +56,7 @@ function doTimeDisp()
         disp:drawStr(i*32+(i*12),40,string.format("%02d",tm["hour"]))
       end
       disp:sendBuffer()
+      _G.weinfo[datastr]=nil
     end
     _G.weinfo={}
     timedisp:start()
