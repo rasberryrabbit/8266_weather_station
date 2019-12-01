@@ -20,22 +20,22 @@ function MsgSystem(str)
 end
 
 function DrawXBM(x,y,w,h,str)
-  if file.list()[str]~=nil then
-      f=file.open(str,"r")
-      local buf=f:read()
-      f:close()
-      local obuf=""
-      i,j=string.find(buf,"%s+\=%s+{")
-      if i~=nil then
-        local buf=string.sub(buf,j)
-        for wv in string.gmatch(buf,"0x[^%s,\,]+") do
-          v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
-          obuf=obuf..string.char(v)
-        end
-        buf=nil
-        disp:drawXBM(x,y,w,h,obuf)
-        obuf=nil
+  if file.exists(str) then
+    f=file.open(str,"r")
+    local buf=f:read()
+    f:close()
+    local obuf=""
+    i,j=string.find(buf,"%s+\=%s+{")
+    if i~=nil then
+      local buf=string.sub(buf,j)
+      for wv in string.gmatch(buf,"0x[^%s,\,]+") do
+        v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
+        obuf=obuf..string.char(v)
       end
+      buf=nil
+      disp:drawXBM(x,y,w,h,obuf)
+      obuf=nil
+    end
   else
     disp:drawBox(x,y,w,h)
     disp:sendBuffer()
@@ -43,6 +43,31 @@ function DrawXBM(x,y,w,h,str)
   end
 end
 
+--[[
+function ConvertXBM(str)
+  l=file.list()
+  for k,v in pairs(l) do
+    if string.find(k,".xbm$") then
+      f=file.open(k,"r")
+      local buf=f:read()
+      f:close()
+      local obuf=""
+      i,j=string.find(buf,"%s+\=%s+{")
+      if i~=nil then
+        local buf=string.sub(buf,j)
+        fo=file.open(k..".raw","w+")
+        for wv in string.gmatch(buf,"0x[^%s,\,]+") do
+          obuf=obuf..string.sub(wv,3)
+        end
+        fo:write(obuf)
+        fo:close()
+      end
+    end
+  end
+  print("done")
+end]]--
+
+--[[
 function date2unix(y, m, d, h, n, s)
     local a, jd
     a = (14 - m) / 12
@@ -57,5 +82,6 @@ function str2epoch(s)
     ep=date2unix(y,m,d,h,mi,n)
     return ep
 end
+]]--
 
 MsgSystem("Display Init Success")

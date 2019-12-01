@@ -1,26 +1,13 @@
 station_cfg={}
 station_cfg.ssid=""
 station_cfg.pwd=""
-if file.list()["eus_params.lua"] then
-  p=dofile("eus_params.lua")
-  station_cfg.ssid=p.wifi_ssid
-  station_cfg.pwd=p.wifi_password
-end
-
-wifi.setmode(wifi.STATION)
-wifi.sta.config(station_cfg)
-wifi.sta.connect()
 
 conntry=15
 aptried={}
+connectionMode=true
 
 conntmr=tmr.create()
 
-reboottmr=tmr.create()
-reboottmr:register(300000,tmr.ALARM_SINGLE,function()
-  node.restart()
-end)
-    
 function listap(t)
   for ssid,v in pairs(t) do
     local authmode, _, _, _ = string.match(v, "([^,]+),([^,]+),([^,]+),([^,]+)")
@@ -52,32 +39,65 @@ function listap(t)
         print("Err #" .. err .. ": " .. str)
       end
     )
-    reboottmr:start()
+    if connectionMode then
+        reboottmr=tmr.create()
+        reboottmr:register(300000,tmr.ALARM_SINGLE,function()
+          node.restart()
+        end)
+        reboottmr:start()
+    end
   end
 end
 
-conntmr:register(2000,tmr.ALARM_AUTO,function()
-    if wifi.sta.getip() == nil then
-        MsgSystem("IP unavailable, Wait")
-        conntry=conntry-1
-        if conntry==0 then
-          conntmr:stop()
-          
-          wifi.sta.getap(0,listap)
-        end
-    else
-        conntmr:unregister()
-        print("WiFi mode: " .. wifi.getmode())
-        print("MAC: " .. wifi.ap.getmac())
-        MsgSystem("IP: "..wifi.sta.getip())
+function doWiFiConnect(reconnect)
+    conntry=15
+    aptried={}
+    connectionMode=reconnect
+    _G.gotip=false
 
-        sntp.sync(nil,nil,nil,1)
-
-        if file.list()["weather.lua"]~=nil then
-          dofile("weather.lua")
-        end
+    if file.list()["eus_params.lua"] then
+      p=dofile("eus_params.lua")
+      station_cfg.ssid=p.wifi_ssid
+      station_cfg.pwd=p.wifi_password
+      p=nil
     end
-end)
-conntmr:start()
 
+    wifi.setmode(wifi.STATION)
+    wifi.sta.config(station_cfg)
+    wifi.sta.connect()
+
+    conntmr:register(2000,tmr.ALARM_AUTO,function()
+        if wifi.sta.getip() == nil then
+            MsgSystem("IP unavailable, Wait")
+            conntry=conntry-1
+            if conntry==0 then
+              conntmr:stop()
+              
+              wifi.sta.getap(0,listap)
+            end
+        else
+            conntmr:unregister()
+            print("MAC: " .. wifi.ap.getmac())
+            MsgSystem("IP: "..wifi.sta.getip())
+
+            sntp.sync(nil,nil,nil,1)
+            _G.gotip=true
+        end
+    end)
+    conntmr:start()
+end
+
+function tryWiFiConnect(reconn)
+  pcall(doWiFiConnect,reconn)
+  wifitmr=tmr.create()
+  wifitmr:register(500000,tmr.ALARM_AUTO,function()
+    if wifi.getmode()==wifi.STATION and wifi.sta.status()==wifi.STA_GOTIP then
+      wifitmr:unregister()
+      wifitmr=nil
+    end
+  end)
+  wifitmr:start()
+end
+
+tryWiFiConnect(true)
 
