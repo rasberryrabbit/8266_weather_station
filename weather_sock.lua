@@ -11,7 +11,7 @@ function HttpGetHeader(buf)
   jh=0
   repeat
     iposh=jh+1
-    ih,jh = string.find(buf,"\n",ipos)
+    ih,jh = string.find(buf,"\n",iposh)
     if ih==nil or iposh==jh then
       return iposh
     end
