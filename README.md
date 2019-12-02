@@ -8,7 +8,7 @@ These are three configuration in lua script,
 
 1. In "apconn.lua", you must specify SSID/Password or using enduser_setup.
 2. In "weather.lua", yout must specify OpenWeatherMap AppId and latitude, longitude.
-  It can also specify in "weconfig.lua" file. (_G.appid="" _G.lat="" _G.lon="127.74")
+  It can also specify in "weconfig.lua" file. (_G.appid="" _G.lat="" _G.lon="")
 3. In "weather.lua", you specify your local time offset from GMT time. (Set automatically in weather information)
 
 wifi Enduser_setup,
@@ -25,3 +25,5 @@ VCC -> 3.3v,
 GND -> GND
 
 Weather information update every 5 minutes and display to post 6 hours informations.
+
+code must be uploaded with binary transfer mode.
