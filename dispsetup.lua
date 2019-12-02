@@ -18,7 +18,7 @@ function MsgSystem(str)
   disp:sendBuffer()
 end
 
-function DrawXBM(x,y,w,h,str)
+--[[function DrawXBM(x,y,w,h,str)
   if file.exists(str) then
     f=file.open(str,"r")
     local buf=f:read()
@@ -40,31 +40,43 @@ function DrawXBM(x,y,w,h,str)
     disp:drawStr(x,y,'?')
     disp:sendBuffer()
   end
-end
-
---[[
-function ConvertXBM(str)
-  l=file.list()
-  for k,v in pairs(l) do
-    if string.find(k,".xbm$") then
-      f=file.open(k,"r")
-      local buf=f:read()
-      f:close()
-      local obuf=""
-      i,j=string.find(buf,"%s+\=%s+{")
-      if i~=nil then
-        local buf=string.sub(buf,j)
-        fo=file.open(k..".raw","w+")
-        for wv in string.gmatch(buf,"0x[^%s,\,]+") do
-          obuf=obuf..string.sub(wv,3)
-        end
-        fo:write(obuf)
-        fo:close()
-      end
-    end
-  end
-  print("done")
 end]]--
+
+-- draw GIMP XBM file
+function DrawXBM(x,y,w,h,str)
+  if file.exists(str) then
+    f=file.open(str,"r")
+    local buf=f:read()
+    f:close()
+    local obuf=""
+    i,j=string.find(buf,"%s+\=%s+{")
+    if i~=nil then
+      local bpl=math.ceil(w/8)
+      local xx=0
+      local yy=0
+      local buf=string.sub(buf,j)
+      for wv in string.gmatch(buf,"0x[^%s,\,]+") do
+        v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
+        obuf=obuf..string.char(v)
+        xx=xx+1
+        if xx>=bpl then
+          disp:drawXBM(x,y+yy,w,1,obuf)
+          obuf=""
+          xx=0
+          yy=yy+1
+          if yy>=h then
+            break
+          end
+        end
+      end
+      buf=nil
+    end
+  else
+    disp:drawBox(x,y,w,h)
+    disp:drawStr(x,y,'?')
+    disp:sendBuffer()
+  end
+end
 
 --[[
 function date2unix(y, m, d, h, n, s)
