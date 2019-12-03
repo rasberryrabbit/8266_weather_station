@@ -55,7 +55,7 @@ function DrawXBM(x,y,w,h,str)
       local xx=0
       local yy=0
       local buf=string.sub(buf,j)
-      for wv in string.gmatch(buf,"0x[^%s,\,]+") do
+      for wv in string.gmatch(buf,"0x[0-9a-fA-F]+") do
         v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
         obuf=obuf..string.char(v)
         xx=xx+1
