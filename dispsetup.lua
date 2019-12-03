@@ -46,31 +46,32 @@ end]]--
 function DrawXBM(x,y,w,h,str)
   if file.exists(str) then
     f=file.open(str,"r")
-    local buf=f:read()
-    f:close()
-    local obuf=""
-    i,j=string.find(buf,"%s+\=%s+{")
-    if i~=nil then
+    local buf=f:readline()
+    if buf then
+      local obuf=""
       local bpl=math.ceil(w/8)
       local xx=0
       local yy=0
-      local buf=string.sub(buf,j)
-      for wv in string.gmatch(buf,"0x[0-9a-fA-F]+") do
-        v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
-        obuf=obuf..string.char(v)
-        xx=xx+1
-        if xx>=bpl then
-          disp:drawXBM(x,y+yy,w,1,obuf)
-          obuf=""
-          xx=0
-          yy=yy+1
-          if yy>=h then
-            break
+      while buf do
+        for wv in string.gmatch(buf,"0x[^%s,]+") do
+          v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
+          obuf=obuf..string.char(v)
+          xx=xx+1
+          if xx>=bpl then
+            disp:drawXBM(x,y+yy,w,1,obuf)
+            obuf=""
+            xx=0
+            yy=yy+1
+            if yy>=h then
+              break
+            end
           end
         end
+        buf=f:readline()
       end
       buf=nil
     end
+    f:close()
   else
     disp:drawBox(x,y,w,h)
     disp:drawStr(x,y,'?')
