@@ -19,8 +19,8 @@ wifi Enduser_setup,
 4. Specify SSID and Password
 5. Reboot or wait reboot in 5 minutes
 
-SDA -> 8266 pin 1,
-SCL -> 8266 pin 2,
+SDA -> 8266 D1,
+SCL -> 8266 D2,
 VCC -> 3.3v,
 GND -> GND
 
