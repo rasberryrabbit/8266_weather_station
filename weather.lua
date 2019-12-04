@@ -34,14 +34,18 @@ weathertmr:register(300000, tmr.ALARM_AUTO, function()
 end)
 
 timedisp=tmr.create()
+doDisp=false
 timedisp:register(1000, tmr.ALARM_AUTO, function()
   pcall(function()
+    if doDisp then
+      return
+    end
+    doDisp=true
     -- draw local time
     local tm = rtctime.epoch2cal(rtctime.get()+_G.timeoffset)
     MsgSystem(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
     -- draw weather info
     if _G.weinfo["h0"] and _G.weinfo["h1"] and _G.weinfo["h2"] then
-      --timedisp:stop()
       --collectgarbage()
       disp:setDrawColor(0)
       disp:drawBox(0,10,127,31)
@@ -59,9 +63,9 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
         _G.weinfo[datastr]=nil
       end
       _G.weinfo={}
-      --timedisp:start()
     end
   end)
+  doDisp=false
 end)
 
 timesynctmr=tmr.create()
