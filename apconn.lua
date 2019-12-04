@@ -80,23 +80,33 @@ function doWiFiConnect(reconnect)
             print("MAC: " .. wifi.ap.getmac())
             MsgSystem("IP: "..wifi.sta.getip())
 
-            sntp.sync(nil,nil,nil,1)
+            pcall(function() sntp.sync(nil,nil,nil,1) end)
             _G.gotip=true
         end
     end)
     conntmr:start()
 end
 
+doReconn=0
+
 function tryWiFiConnect(reconn)
-  pcall(doWiFiConnect,reconn)
-  wifitmr=tmr.create()
-  wifitmr:register(500000,tmr.ALARM_AUTO,function()
-    if wifi.getmode()==wifi.STATION and wifi.sta.status()==wifi.STA_GOTIP then
-      wifitmr:unregister()
-      wifitmr=nil
-    end
-  end)
-  wifitmr:start()
+  if doReconn~=0 then
+    return
+  end
+  doReconn=1
+  if pcall(doWiFiConnect,reconn) then
+    wifitmr=tmr.create()
+    wifitmr:register(60000,tmr.ALARM_AUTO,function()
+      if wifi.getmode()==wifi.STATION and wifi.sta.status()==wifi.STA_GOTIP then
+        wifitmr:unregister()
+        wifitmr=nil
+        doReconn=0
+      end
+    end)
+    wifitmr:start()
+  else
+    doReconn=0
+  end
 end
 
 tryWiFiConnect(true)
