@@ -34,6 +34,7 @@ ck:on("receive", function(sck, cwinfo)
   weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
   _G.weinfo["h0"]={tmin=temmin, tmax=temmax, humi=hum, icon=weicon, wtime=_G.rtm, wind=windspd}
   _G.timeoffset=t["timezone"]
+  print("Current")
   cwinfo=nil
 end)
 ck:on("connection", function(sck, cwinfo)
@@ -104,7 +105,7 @@ sk:on("receive", function(sck, c)
               weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
               _G.weinfo[datastr]={tmin=temmin, tmax=temmax, humi=hum, icon=weicon, wtime=dayw, wind=windspd}
               _G.imgoffset=_G.imgoffset+1
-              --print("-forcast-")
+              print("Forecast")
           end
         end
         cpos=i+1
@@ -120,3 +121,5 @@ sk:on("connection", function(sck, c)
   sck:send(_G.to_send)
   _G.to_send=nil
 end)
+
+  
