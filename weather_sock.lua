@@ -68,6 +68,7 @@ sk:on("receive", function(sck, c)
     _G.ContLen=_G.ContLen-ilen
     if _G.ContLen<=0 then
       _G.weinfo["h3"]=1
+      print("ok")
     end
     if _G.weinfo["h2"]~=nil then
       c=nil
