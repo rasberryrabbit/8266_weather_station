@@ -34,38 +34,41 @@ weathertmr:register(300000, tmr.ALARM_AUTO, function()
 end)
 
 timedisp=tmr.create()
+indisp=false
 timedisp:register(1500, tmr.ALARM_AUTO, function()
-  timedisp:stop()
-  pcall(function()
-    -- draw weather info
-    if _G.weinfo["h0"] and _G.weinfo["h1"] and _G.weinfo["h2"] then
-      disp:setDrawColor(0)
-      disp:drawBox(0,10,127,31)
-      disp:setDrawColor(1)
-      for i=0,2 do
-        local datastr=string.format("h%d",i)
-        DrawXBM(i*32+(i*12),64-32,32,32,_G.weinfo[datastr]["icon"])
-        disp:drawStr(i*32+(i*12),20,string.format("%2d",(_G.weinfo[datastr]["tmin"]+_G.weinfo[datastr]["tmax"])/2))
-        disp:drawStr(i*32+(i*12),30,string.format("%2d%% %.2dm",_G.weinfo[datastr]["humi"],_G.weinfo[datastr]["wind"]))
-        if i>0 then
-          local tm = rtctime.epoch2cal(_G.weinfo[datastr]["wtime"]+_G.timeoffset)
-          disp:drawStr(i*32+(i*12),40,string.format("%02d",tm["hour"]))
+  if not indisp then
+    indisp=true
+    pcall(function()
+      -- draw weather info
+      if _G.weinfo["h0"] and _G.weinfo["h1"] and _G.weinfo["h2"] then
+        disp:setDrawColor(0)
+        disp:drawBox(0,10,127,31)
+        disp:setDrawColor(1)
+        for i=0,2 do
+          local datastr=string.format("h%d",i)
+          DrawXBM(i*32+(i*12),64-32,32,32,_G.weinfo[datastr]["icon"])
+          disp:drawStr(i*32+(i*12),20,string.format("%2d",(_G.weinfo[datastr]["tmin"]+_G.weinfo[datastr]["tmax"])/2))
+          disp:drawStr(i*32+(i*12),30,string.format("%2d%% %.2dm",_G.weinfo[datastr]["humi"],_G.weinfo[datastr]["wind"]))
+          if i>0 then
+            local tm = rtctime.epoch2cal(_G.weinfo[datastr]["wtime"]+_G.timeoffset)
+            disp:drawStr(i*32+(i*12),40,string.format("%02d",tm["hour"]))
+          end
+          _G.weinfo[datastr]=nil
+          MsgUpdate()
         end
-        _G.weinfo[datastr]=nil
-        MsgUpdate()
+        --_G.weinfo={}
+        --collectgarbage()
       end
-      --_G.weinfo={}
-      collectgarbage()      
-    end
-    -- draw local time
-    local tm = rtctime.epoch2cal(rtctime.get()+_G.timeoffset)
-    disp:setDrawColor(0)
-    disp:drawBox(0,0,128,10+1)
-    disp:setDrawColor(1)
-    disp:drawStr(0,9,string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
-    MsgUpdate()
-  end)
-  timedisp:start()
+      -- draw local time
+      local tm = rtctime.epoch2cal(rtctime.get()+_G.timeoffset)
+      disp:setDrawColor(0)
+      disp:drawBox(0,0,128,10+1)
+      disp:setDrawColor(1)
+      disp:drawStr(0,9,string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
+      MsgUpdate()
+    end)
+    indisp=false
+  end
 end)
 
 timesynctmr=tmr.create()
