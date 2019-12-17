@@ -6,25 +6,10 @@ _G.imgoffset=0
 _G.weinfo={}
 _G.rtm=rtctime.get()
 
---[[
-function HttpGetHeader(buf)
-  jh=0
-  repeat
-    iposh=jh+1
-    ih,jh = string.find(buf,"\n",iposh)
-    if ih==nil or iposh==jh then
-      return iposh
-    end
-  until ih==nil
-  return nil
-end
-]]--
-
 ck=net.createConnection(net.TCP, 0)
 ck:on("receive", function(sck, cwinfo)
   -- strip header
   if _G.ContLen==-1 then
-    --i=HttpGetHeader(cwinfo)
     i=nil
     jh=0
     repeat
@@ -35,7 +20,7 @@ ck:on("receive", function(sck, cwinfo)
         break
       end
     until ih==nil
-    --
+
     if i~=nil then
       _G.ContLen=tonumber(string.match(cwinfo,"Content-Length:%s+(%d+)"))
       cwinfo=string.sub(cwinfo,i,-1)
@@ -49,11 +34,11 @@ ck:on("receive", function(sck, cwinfo)
   weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
   _G.weinfo["h0"]={tmin=temmin, tmax=temmax, humi=hum, icon=weicon, wtime=_G.rtm, wind=windspd}
   _G.timeoffset=t["timezone"]
-  --sck:close()
-  --print("-current-")
   cwinfo=nil
 end)
 ck:on("connection", function(sck, cwinfo)
+  _G.weinfo["h0"]=nil
+  _G.last_remain=""
   _G.ContLen=-1
   sck:send(_G.to_send)
   _G.to_send=nil
@@ -66,7 +51,6 @@ sk:on("receive", function(sck, c)
       return
     end
     if _G.ContLen==-1 then
-      --i=HttpGetHeader(c)
       i=nil
       jh=0
       repeat
@@ -77,7 +61,7 @@ sk:on("receive", function(sck, c)
           break
         end
       until ih==nil
-      --
+
       if i~=nil then
         _G.ContLen=tonumber(string.match(c,"Content-Length:%s+(%d+)"))
         c=string.sub(c,i,-1)
@@ -129,6 +113,7 @@ sk:on("receive", function(sck, c)
     c=nil
 end)
 sk:on("connection", function(sck, c)
+  _G.weinfo["h1"]=nil
   _G.last_remain=""
   _G.ContLen=-1
   _G.imgoffset=1

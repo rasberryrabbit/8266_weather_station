@@ -40,6 +40,7 @@ function listap(t)
     )
     if connectionMode then
       MsgSystem("No Internet.")
+      MsgUpdate()
       reboottmr=tmr.create()
       reboottmr:register(300000,tmr.ALARM_SINGLE,function()
         node.restart()
@@ -83,6 +84,7 @@ function doWiFiConnect(reconnect)
             pcall(function() sntp.sync(nil,nil,nil,1) end)
             _G.gotip=true
         end
+        MsgUpdate()
     end)
     conntmr:start()
 end

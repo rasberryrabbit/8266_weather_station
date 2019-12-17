@@ -15,7 +15,15 @@ function MsgSystem(str)
   disp:drawBox(0,0,128,u8g2_fontHeight+1)
   disp:setDrawColor(1)
   disp:drawStr(0,9,str)
-  disp:sendBuffer()
+end
+
+dispUpd=false
+function MsgUpdate()
+  if dispUpd==false then
+    dispUpd=true
+    disp:sendBuffer()
+    dispUpd=false
+  end
 end
 
 --[[function DrawXBM(x,y,w,h,str)
@@ -73,7 +81,6 @@ function DrawXBM(x,y,w,h,str)
   else
     disp:drawBox(x,y,w,h)
     disp:drawStr(x,y,'?')
-    disp:sendBuffer()
   end
 end
 
@@ -95,3 +102,4 @@ end
 ]]--
 
 MsgSystem("Display Init Success")
+MsgUpdate()
