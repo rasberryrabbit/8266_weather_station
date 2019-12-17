@@ -15,40 +15,8 @@ function MsgSystem(str)
   disp:drawBox(0,0,128,u8g2_fontHeight+1)
   disp:setDrawColor(1)
   disp:drawStr(0,9,str)
+  disp:sendBuffer()
 end
-
-dispUpd=false
-function MsgUpdate()
-  if dispUpd==false then
-    dispUpd=true
-    disp:sendBuffer()
-    dispUpd=false
-  end
-end
-
---[[function DrawXBM(x,y,w,h,str)
-  if file.exists(str) then
-    f=file.open(str,"r")
-    local buf=f:read()
-    f:close()
-    local obuf=""
-    i,j=string.find(buf,"%s+\=%s+{")
-    if i~=nil then
-      local buf=string.sub(buf,j)
-      for wv in string.gmatch(buf,"0x[^%s,\,]+") do
-        v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
-        obuf=obuf..string.char(v)
-      end
-      buf=nil
-      disp:drawXBM(x,y,w,h,obuf)
-      obuf=nil
-    end
-  else
-    disp:drawBox(x,y,w,h)
-    disp:drawStr(x,y,'?')
-    disp:sendBuffer()
-  end
-end]]--
 
 -- draw GIMP XBM file
 function DrawXBM(x,y,w,h,str)
@@ -57,7 +25,7 @@ function DrawXBM(x,y,w,h,str)
     local bpl=math.ceil(w/8)
     local xx=0
     local yy=0
-    local buf=""
+    local buf
     f=file.open(str,"r")
     buf=f:readline()
     while buf~=nil do
@@ -79,8 +47,7 @@ function DrawXBM(x,y,w,h,str)
     end
     f:close()
   else
-    disp:drawBox(x,y,w,h)
-    disp:drawStr(x,y,'?')
+    print(str)
   end
 end
 
@@ -102,4 +69,3 @@ end
 ]]--
 
 MsgSystem("Display Init Success")
-MsgUpdate()

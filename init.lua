@@ -35,7 +35,6 @@ if file.exists("dispsetup.lua") then
         tcount=tcount-1
       end
       MsgSystem(string.format("Wait %d second(s)",tcount))
-      MsgUpdate()
     end)
     starttmr:start()
 end
