@@ -1,4 +1,6 @@
 
+waithttp=tmr.create()
+  
 function getweather()
   _G.rtm=rtctime.get()
   tm=rtctime.epoch2cal(_G.rtm)
@@ -12,7 +14,6 @@ function getweather()
 
   -- forecast
   -- wait current weather
-  waithttp=tmr.create()
   waithttp:register(1500,tmr.ALARM_AUTO,function()
     if _G.weinfo["h0"]~=nil then
       waithttp:unregister()
@@ -25,6 +26,9 @@ end
 
 weathertmr=tmr.create()
 weathertmr:register(300000, tmr.ALARM_AUTO, function()
+  if waithttp:state()~=nil then
+    waithttp:unregister()
+  end
   if not pcall(getweather) then
     _G.weinfo["h2"]=nil
     if wifi.getmode()==wifi.STATION and wifi.sta.status()~=wifi.STA_GOTIP then
