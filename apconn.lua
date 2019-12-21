@@ -82,7 +82,7 @@ function doWiFiConnect(reconnect)
     connectionMode=reconnect
     _G.gotip=false
 
-    if file.list()["eus_params.lua"] then
+    if file.exists("eus_params.lua") then
       p=dofile("eus_params.lua")
       station_cfg.ssid=p.wifi_ssid
       station_cfg.pwd=p.wifi_password
