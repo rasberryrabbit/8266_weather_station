@@ -19,7 +19,9 @@ end
 
 conntmr:register(2000,tmr.ALARM_AUTO,function()
     if wifi.sta.getip() == nil then
-      MsgSystem("IP unavailable, Wait")
+      if connectionMode then
+        MsgSystem("IP unavailable, Wait")
+      end
       conntry=conntry-1
       if conntry==0 then
         conntmr:stop()
@@ -69,7 +71,9 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
       conntmr:stop()
       aptry={}
       print("MAC: " .. wifi.ap.getmac())
-      MsgSystem("IP: "..wifi.sta.getip())
+      if connectionMode then
+        MsgSystem("IP: "..wifi.sta.getip())
+      end
 
       pcall(function() sntp.sync(nil,nil,nil,1) end)
       _G.gotip=true
