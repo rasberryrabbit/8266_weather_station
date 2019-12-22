@@ -15,34 +15,42 @@ function listap(t)
       aptry[ssid]=0
     end
   end
+  aptry["_allaplisted_"]=1
 end
 
 conntmr:register(2000,tmr.ALARM_AUTO,function()
     if wifi.sta.getip() == nil then
       if connectionMode then
-        MsgSystem("IP unavailable, Wait")
+        MsgSystem("Wait IP... "..conntry)
       end
       conntry=conntry-1
-      if conntry==0 then
-        conntmr:stop()
-        
-        wifi.sta.getap(0,listap)
-        for ssid, id in pairs(aptry) do
-          if id==0 then
-            aptry[ssid]=1
-            wifi.sta.disconnect()
-            wifi.setmode(wifi.STATION)
-            station_cfg.ssid=ssid
-            station_cfg.pwd=""
-            wifi.sta.config(station_cfg)
-            wifi.sta.connect()
-            conntry=15
-            conntmr:start()
-            break
+      if conntry<=0 then
+        conntry=0
+        if aptry["_apchecked_"]~=1 then
+          aptry["_apchecked_"]=1
+          aptry["_allaplisted_"]=2
+          wifi.sta.getap(0,listap)
+        end
+        if aptry["_allaplisted_"]==1 then
+          aptry["_apchecked_"]=2
+          for ssid, id in pairs(aptry) do
+            if id==0 then
+              aptry[ssid]=1
+              wifi.sta.disconnect()
+              wifi.setmode(wifi.STATION)
+              station_cfg.ssid=ssid
+              station_cfg.pwd=""
+              wifi.sta.config(station_cfg)
+              wifi.sta.connect()
+              print("Connect "..ssid)
+              conntry=15
+              break
+            end
           end
         end
         -- no network
-        if conntry==0 then
+        if conntry<=0 and aptry["_allaplisted_"]==1 then
+          conntmr:stop()
           aptry={}
           wifi.sta.disconnect()
           wifi.setmode(wifi.STATIONAP)
@@ -83,6 +91,7 @@ end)
 function doWiFiConnect(reconnect)
     conntry=15
     aptry={}
+    aptry["_apchecked_"]=2
     connectionMode=reconnect
     _G.gotip=false
 
