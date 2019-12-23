@@ -27,3 +27,5 @@ GND -> GND
 Weather information update every 5 minutes and display to post 6 hours informations.
 
 code must be uploaded with binary transfer mode.
+
+Files are uploaded by LuaLoader 0.91
