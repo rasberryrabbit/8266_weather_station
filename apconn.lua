@@ -89,6 +89,7 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
 end)
 
 function doWiFiConnect(reconnect)
+  if conntmr:state()==false then
     conntry=15
     aptry={}
     aptry["_apchecked_"]=2
@@ -107,6 +108,7 @@ function doWiFiConnect(reconnect)
     wifi.sta.connect()
 
     conntmr:start()
+  end
 end
 
 doReconn=0
