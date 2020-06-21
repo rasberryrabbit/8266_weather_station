@@ -8,11 +8,9 @@ sla = 0x3c
 disp = u8g2.ssd1306_i2c_128x64_noname(id, sla)
 disp:setFont(u8g2.font_6x10_tf)
 
-u8g2_fontHeight=10
-
 function MsgSystem(str)
   disp:setDrawColor(0)
-  disp:drawBox(0,0,128,u8g2_fontHeight+1)
+  disp:drawBox(0,0,128,10+1) -- u8g2_fontHeight=10
   disp:setDrawColor(1)
   disp:drawStr(0,9,str)
   disp:sendBuffer()
@@ -46,6 +44,7 @@ function DrawXBM(x,y,w,h,str)
       buf=f:readline()
     end
     f:close()
+    f=nil
   else
     print(str)
   end
