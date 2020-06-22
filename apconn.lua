@@ -121,7 +121,7 @@ function tryWiFiConnect(reconn)
   if pcall(doWiFiConnect,reconn) then
     wifitmr=tmr.create()
     wifitmr:register(60000,tmr.ALARM_AUTO,function()
-      if wifi.getmode()==wifi.STATION and wifi.sta.status()==wifi.STA_GOTIP then
+      if wifi.sta.status()==wifi.STA_GOTIP then
         wifitmr:unregister()
         wifitmr=nil
         doReconn=0
