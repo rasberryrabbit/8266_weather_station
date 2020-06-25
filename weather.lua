@@ -31,9 +31,10 @@ weathertmr:register(300000, tmr.ALARM_AUTO, function()
   end
   if not pcall(getweather) then
     _G.weinfo["h2"]=nil
-    if wifi.sta.status()~=wifi.STA_GOTIP then
+    --if wifi.sta.status()~=wifi.STA_GOTIP then
+      collectgarbage()
       tryWiFiConnect(false)
-    end
+    --end
   end
 end)
 

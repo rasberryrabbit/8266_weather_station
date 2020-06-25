@@ -89,47 +89,44 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
 end)
 
 function doWiFiConnect(reconnect)
-  if conntmr:state()==false then
-    conntry=15
-    aptry={}
-    aptry["_apchecked_"]=2
-    connectionMode=reconnect
-    _G.gotip=false
+  conntmr:stop()
+  conntry=15
+  aptry={}
+  aptry["_apchecked_"]=2
+  connectionMode=reconnect
+  _G.gotip=false
 
-    if file.exists("eus_params.lua") then
-      p=dofile("eus_params.lua")
-      station_cfg.ssid=p.wifi_ssid
-      station_cfg.pwd=p.wifi_password
-      p=nil
-    end
-
-    wifi.setmode(wifi.STATION)
-    wifi.sta.config(station_cfg)
-    wifi.sta.connect()
-
-    conntmr:start()
+  if file.exists("eus_params.lua") then
+    p=dofile("eus_params.lua")
+    station_cfg.ssid=p.wifi_ssid
+    station_cfg.pwd=p.wifi_password
+    p=nil
   end
+
+  wifi.setmode(wifi.STATION)
+  wifi.sta.config(station_cfg)
+  wifi.sta.connect()
+
+  conntmr:start()
 end
 
-doReconn=0
+wifitmr=nil
 
 function tryWiFiConnect(reconn)
-  if doReconn~=0 then
-    return
+  if wifitmr~=nil then
+    wifitmr:unregister()
+    wifitmr=nil
   end
-  doReconn=1
   if pcall(doWiFiConnect,reconn) then
     wifitmr=tmr.create()
     wifitmr:register(60000,tmr.ALARM_AUTO,function()
-      if wifi.sta.status()==wifi.STA_GOTIP then
+      if wifi.sta.getip() ~= nil then
         wifitmr:unregister()
         wifitmr=nil
         doReconn=0
       end
     end)
     wifitmr:start()
-  else
-    doReconn=0
   end
 end
 
