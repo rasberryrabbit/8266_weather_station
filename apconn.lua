@@ -94,6 +94,7 @@ function doWiFiConnect(reconnect)
   aptry={}
   aptry["_apchecked_"]=2
   connectionMode=reconnect
+  wifi.sta.disconnect()
   _G.gotip=false
 
   if file.exists("eus_params.lua") then
