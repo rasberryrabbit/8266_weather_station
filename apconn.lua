@@ -3,7 +3,7 @@ station_cfg.ssid=""
 station_cfg.pwd=""
 
 conntry=15
-aptry={}
+aptry=nil
 connectionMode=true
 
 conntmr=tmr.create()
@@ -11,11 +11,13 @@ conntmr=tmr.create()
 function listap(t)
   for ssid,v in pairs(t) do
     local authmode, _, _, _ = string.match(v, "([^,]+),([^,]+),([^,]+),([^,]+)")
-    if aptry[ssid]==nil and authmode=="0" then
+    if aptry~=nil and aptry[ssid]==nil and authmode=="0" then
       aptry[ssid]=0
     end
   end
-  aptry["_allaplisted_"]=1
+  if aptry~=nil then
+    aptry["_allaplisted_"]=1
+  end
 end
 
 conntmr:register(2000,tmr.ALARM_AUTO,function()
@@ -26,12 +28,12 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
       conntry=conntry-1
       if conntry<=0 then
         conntry=0
-        if aptry["_apchecked_"]~=1 then
+        if aptry~=nil and aptry["_apchecked_"]~=1 then
           aptry["_apchecked_"]=1
           aptry["_allaplisted_"]=2
           wifi.sta.getap(0,listap)
         end
-        if aptry["_allaplisted_"]==1 then
+        if aptry~=nil and aptry["_allaplisted_"]==1 then
           aptry["_apchecked_"]=2
           for ssid, id in pairs(aptry) do
             if id==0 then
@@ -49,9 +51,9 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
           end
         end
         -- no network
-        if conntry<=0 and aptry["_allaplisted_"]==1 then
+        if conntry<=0 and aptry~=nil and aptry["_allaplisted_"]==1 then
           conntmr:stop()
-          aptry={}
+          aptry=nil
           wifi.sta.disconnect()
           wifi.setmode(wifi.STATIONAP)
           wifi.ap.config({ssid="Weather_"..node.chipid(), auth=wifi.OPEN})
@@ -77,7 +79,7 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
       end
     else
       conntmr:stop()
-      aptry={}
+      aptry=nil
       print("MAC: " .. wifi.ap.getmac())
       if connectionMode then
         MsgSystem("IP: "..wifi.sta.getip())
