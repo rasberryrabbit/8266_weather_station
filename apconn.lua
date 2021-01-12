@@ -28,28 +28,30 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
       conntry=conntry-1
       if conntry<=0 then
         conntry=0
-        if aptry~=nil and aptry["_apchecked_"]~=1 then
-          aptry["_apchecked_"]=1
-          aptry["_allaplisted_"]=2
-          wifi.sta.getap(0,listap)
-        end
-        if aptry~=nil and aptry["_allaplisted_"]==1 then
-          aptry["_apchecked_"]=2
-          for ssid, id in pairs(aptry) do
-            if id==0 then
-              aptry[ssid]=1
-              wifi.sta.disconnect()
-              wifi.setmode(wifi.STATION)
-              station_cfg.ssid=ssid
-              station_cfg.pwd=""
-              wifi.sta.config(station_cfg)
-              wifi.sta.connect()
-              print("Connect "..ssid)
-              conntry=15
-              break
-            end
-          end
-        end
+		if aptry~=nil then
+		  if aptry["_apchecked_"]~=1 then
+			aptry["_apchecked_"]=1
+			aptry["_allaplisted_"]=2
+			wifi.sta.getap(0,listap)
+		  end
+		  if aptry["_allaplisted_"]==1 then
+			aptry["_apchecked_"]=2
+			for ssid, id in pairs(aptry) do
+				if id==0 then
+				aptry[ssid]=1
+				wifi.sta.disconnect()
+				wifi.setmode(wifi.STATION)
+				station_cfg.ssid=ssid
+				station_cfg.pwd=""
+				wifi.sta.config(station_cfg)
+				wifi.sta.connect()
+				print("Connect "..ssid)
+				conntry=15
+				break
+				end
+			end
+		  end
+		end
         -- no network
         if conntry<=0 and aptry~=nil and aptry["_allaplisted_"]==1 then
           conntmr:stop()
@@ -60,21 +62,21 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
           enduser_setup.manual(true)
           enduser_setup.start(
             function()
-              print("WiFi as:" .. wifi.sta.getip())
+              --print("WiFi as:" .. wifi.sta.getip())
+              MsgSystem("WiFi as:" .. wifi.sta.getip())
               --node.restart()
             end,
             function(err, str)
               print("Err #" .. err .. ": " .. str)
             end
           )
-          if connectionMode then
-            MsgSystem("No Internet.")
-            reboottmr=tmr.create()
-            reboottmr:register(300000,tmr.ALARM_SINGLE,function()
-              node.restart()
-            end)
-            reboottmr:start()
-          end
+		  -- reboot system
+          MsgSystem("No Internet.")
+          reboottmr=tmr.create()
+          reboottmr:register(300000,tmr.ALARM_SINGLE,function()
+            node.restart()
+          end)
+          reboottmr:start()
         end
       end
     else
