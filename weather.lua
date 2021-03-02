@@ -28,8 +28,11 @@ weathertmr=tmr.create()
 weathertmr:register(300000, tmr.ALARM_AUTO, function()
   if waithttp:state()~=nil then
     waithttp:unregister()
+	_G.weinfo["h0"]=nil
   end
   if not pcall(getweather) then
+	_G.weinfo["h0"]=nil
+	_G.weinfo["h1"]=nil
     _G.weinfo["h2"]=nil
     --if wifi.sta.status()~=wifi.STA_GOTIP then
       collectgarbage()
