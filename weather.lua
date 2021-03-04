@@ -7,7 +7,7 @@ function getweather()
   if tm["year"]==1970 then
     return
   end
-  
+  _G.weinfo["h4"]=nil
   -- current weather
   _G.to_send="GET /data/2.5/weather?lat=".._G.lat.."&lon=".._G.lon.."&appid=".._G.appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
   ck:connect(80,"api.openweathermap.org")
@@ -30,11 +30,13 @@ weathertmr:register(300000, tmr.ALARM_AUTO, function()
   if waithttp:state()~=nil then
     waithttp:unregister()
   end
+  if _G.weinfo["h4"]==nil then
+    tryWiFiConnect(false)  
+  end
   if not pcall(getweather) then
     _G.weinfo["h2"]=nil
     --if wifi.sta.status()~=wifi.STA_GOTIP then
       collectgarbage()
-      tryWiFiConnect(false)
     --end
   end
 end)
