@@ -44,6 +44,7 @@ ck:on("connection", function(sck, cwinfo)
   sck:send(_G.to_send)
   _G.to_send=nil
 end)
+ck:on("disconnect", function() tryWiFiConnect(false) end)
 
 sk=net.createConnection(net.TCP, 0)
 sk:on("receive", function(sck, c)
@@ -126,5 +127,6 @@ sk:on("connection", function(sck, c)
   sck:send(_G.to_send)
   _G.to_send=nil
 end)
+sk:on("disconnect", function() tryWiFiConnect(false) end)
 
   
