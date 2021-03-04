@@ -7,6 +7,7 @@ function getweather()
   if tm["year"]==1970 then
     return
   end
+  _G.weinfo["h3"]=nil
   -- current weather
   _G.to_send="GET /data/2.5/weather?lat=".._G.lat.."&lon=".._G.lon.."&appid=".._G.appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
   ck:connect(80,"api.openweathermap.org")
