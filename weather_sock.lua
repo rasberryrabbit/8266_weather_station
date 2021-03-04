@@ -5,6 +5,7 @@ _G.to_send=""
 _G.imgoffset=0
 _G.weinfo={}
 _G.rtm=rtctime.get()
+disconn=0
 
 ck=net.createConnection(net.TCP, 0)
 ck:on("receive", function(sck, cwinfo)
@@ -44,6 +45,7 @@ ck:on("connection", function(sck, cwinfo)
   sck:send(_G.to_send)
   _G.to_send=nil
 end)
+ck:on("disconnection", function(sck) disconn=1 end)
 
 sk=net.createConnection(net.TCP, 0)
 sk:on("receive", function(sck, c)
@@ -126,4 +128,5 @@ sk:on("connection", function(sck, c)
   sck:send(_G.to_send)
   _G.to_send=nil
 end)
+sk:on("disconnection", function(sck) disconn=2 end)
   
