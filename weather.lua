@@ -7,7 +7,6 @@ function getweather()
   if tm["year"]==1970 then
     return
   end
-  disconn=0
   -- current weather
   _G.to_send="GET /data/2.5/weather?lat=".._G.lat.."&lon=".._G.lon.."&appid=".._G.appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
   ck:connect(80,"api.openweathermap.org")
@@ -29,7 +28,7 @@ weathertmr:register(300000, tmr.ALARM_AUTO, function()
   if waithttp:state()~=nil then
     waithttp:unregister()
   end
-  if disconn~=3 then
+  if _G.weinfo["h3"]==nil then
     tryWiFiConnect(false)  
   end
   if not pcall(getweather) then
@@ -53,7 +52,6 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
     MsgSystem(string.format("%04d/%02d/%02d %02d:%02d:%02d",tm["year"],tm["mon"],tm["day"],tm["hour"],tm["min"],tm["sec"]))
     -- draw weather info
     if _G.weinfo["h0"]~=nil and _G.weinfo["h1"]~=nil and _G.weinfo["h2"]~=nil and _G.weinfo["h3"]~=nil then
-	  disconn=3
       disp:setDrawColor(0)
       disp:drawBox(0,10,127,31)
       disp:setDrawColor(1)
@@ -68,7 +66,10 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
         end
         disp:sendBuffer()
       end
-      _G.weinfo={}
+      --_G.weinfo={}
+	  _G.weinfo["h0"]=nil
+	  _G.weinfo["h1"]=nil
+	  _G.weinfo["h2"]=nil
       collectgarbage()
       print("ok")
     end
