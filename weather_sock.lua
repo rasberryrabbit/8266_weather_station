@@ -44,7 +44,7 @@ ck:on("connection", function(sck, cwinfo)
   sck:send(_G.to_send)
   _G.to_send=nil
 end)
-ck:on("disconnection", function(sck) print("sk disconnect") end)
+ck:on("disconnection", function(sck) print("ck disconnect") end)
 
 sk=net.createConnection(net.TCP, 0)
 sk:on("receive", function(sck, c)
