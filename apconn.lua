@@ -67,11 +67,11 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
               --node.restart()
             end,
             function(err, str)
-              MsgError("Err #" .. err .. ": " .. str)
+              print("Err #" .. err .. ": " .. str)
             end
           )
 		  -- reboot system
-          MsgError("No Internet.")
+          MsgSystem("No Internet.")
           reboottmr=tmr.create()
           reboottmr:register(300000,tmr.ALARM_SINGLE,function()
             node.restart()

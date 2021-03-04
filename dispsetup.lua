@@ -16,14 +16,6 @@ function MsgSystem(str)
   disp:sendBuffer()
 end
 
-function MsgError(str)
-  disp:setDrawColor(0)
-  disp:drawBox(0,53,128,63)
-  disp:setDrawColor(1)
-  disp:drawStr(0,63,str)
-  disp:sendBuffer()
-end
-
 -- draw GIMP XBM file
 function DrawXBM(x,y,w,h,str)
   if file.exists(str) then
