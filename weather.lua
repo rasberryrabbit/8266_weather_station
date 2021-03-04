@@ -30,7 +30,7 @@ weathertmr:register(300000, tmr.ALARM_AUTO, function()
   if waithttp:state()~=nil then
     waithttp:unregister()
   end
-  if _G.weinfo["h4"]==nil then
+  if (_G.weinfo["h4"]==nil) or (_G.weinfo["h0"]==nil) or (_G.weinfo["h2"]==nil) then
     tryWiFiConnect(false)  
   end
   if not pcall(getweather) then
