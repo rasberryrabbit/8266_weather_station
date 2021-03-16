@@ -19,29 +19,18 @@ end
 -- draw GIMP XBM file
 function DrawXBM(x,y,w,h,str)
   if file.exists(str) then
-    local obuf=""
     local bpl=math.ceil(w/8)
-    local xx=0
     local yy=0
     local buf
     f=file.open(str,"r")
-    buf=f:readline()
+    buf=f:read(bpl)
     while buf~=nil do
-      for wv in string.gmatch(buf,"0x[^%s,]+") do
-        v=bit.band(bit.bnot(tonumber(wv,16)),0xff)
-        obuf=obuf..string.char(v)
-        xx=xx+1
-        if xx>=bpl then
-          disp:drawXBM(x,y+yy,w,1,obuf)
-          obuf=""
-          xx=0
-          yy=yy+1
-          if yy>=h then
-            break
-          end
-        end
+      disp:drawXBM(x,y+yy,w,1,buf)
+      yy=yy+1
+      if yy>=h then
+        break
       end
-      buf=f:readline()
+      buf=f:read(bpl)
     end
     f:close()
     f=nil

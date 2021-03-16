@@ -1,6 +1,9 @@
 
 if file.exists("dispsetup.lua") then 
     dofile("dispsetup.lua")
+	if file.exists("xbmconv.lua") then
+	dofile("xbmconv.lua")
+	end
     starttmr=tmr.create()
     tcount=15
     _G.gotip=false

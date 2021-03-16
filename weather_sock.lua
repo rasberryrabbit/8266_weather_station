@@ -31,7 +31,7 @@ ck:on("receive", function(sck, cwinfo)
   temmax=t.main["temp_max"]
   windspd=t.wind["speed"]
   hum=t.main["humidity"]
-  weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
+  weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".bin"
   _G.weinfo["h0"]={tmin=temmin, tmax=temmax, humi=hum, icon=weicon, wtime=_G.rtm, wind=windspd}
   _G.timeoffset=t["timezone"]
   --print("Current")
@@ -106,7 +106,7 @@ sk:on("receive", function(sck, c)
               temmax=t.main["temp_max"]
               windspd=t.wind["speed"]
               hum=t.main["humidity"]
-              weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".xbm"
+              weicon="we_"..string.sub(t.weather[1]["icon"],1,-1)..".bin"
               _G.weinfo["h".._G.imgoffset]={tmin=temmin, tmax=temmax, humi=hum, icon=weicon, wtime=dayw, wind=windspd}
               _G.imgoffset=_G.imgoffset+1
               --print("Forecast")
