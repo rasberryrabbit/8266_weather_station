@@ -4,7 +4,7 @@ local XBMList = {'we_01d.xbm','we_01n.xbm','we_02d.xbm','we_02n.xbm','we_03d.xbm
 
 local function ConvXBM(w,h,str)
   if file.exists(str) then
-    local nf=string.gsub(str,".xbm",".bin")
+    local nf=string.gsub(str,"%.xbm",".bin")
     if file.exists(nf) then
 	  return
 	end
