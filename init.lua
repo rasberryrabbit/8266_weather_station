@@ -5,7 +5,7 @@ if file.exists("dispsetup.lua") then
 	dofile("xbmconv.lua")
 	end
     starttmr=tmr.create()
-    tcount=15
+    local tcount=15
     _G.gotip=false
     starttmr:register(1000, tmr.ALARM_AUTO,function()
       if tcount==0 then

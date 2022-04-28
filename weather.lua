@@ -50,7 +50,7 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
   pcall(function()
     -- draw local time
     local tm = rtctime.epoch2cal(rtctime.get()+_G.timeoffset)
-    MsgSystem(string.format("%04d/%02d/%02d %02d:%02d:%02d",tm["year"],tm["mon"],tm["day"],tm["hour"],tm["min"],tm["sec"]))
+    MsgSystem(string.format("%2d/%2d %02d:%02d:%02d",tm["mon"],tm["day"],tm["hour"],tm["min"],tm["sec"]))
     -- draw weather info
     if _G.weinfo["h0"]~=nil and _G.weinfo["h1"]~=nil and _G.weinfo["h2"]~=nil and _G.weinfo["h3"]~=nil then
       disp:setDrawColor(0)
@@ -58,12 +58,12 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
       disp:setDrawColor(1)
       for i=0,2 do
         DrawXBM(i*32+(i*12),64-32,32,32,_G.weinfo["h"..i]["icon"])
-        disp:drawStr(i*32+(i*12),20,string.format("%2d",(_G.weinfo["h"..i]["tmin"]+_G.weinfo["h"..i]["tmax"])/2))
-        disp:drawStr(i*32+(i*12),30,string.format("%2d%%",_G.weinfo["h"..i]["humi"]))
-        disp:drawStr(i*32+(i*12)+21,30,string.format("%dm",_G.weinfo["h"..i]["wind"]))
+        disp:drawStr(i*32+(i*12)+node.random(8),20,string.format("%2d",(_G.weinfo["h"..i]["tmin"]+_G.weinfo["h"..i]["tmax"])/2))
+        disp:drawStr(i*32+(i*12)+node.random(0,1),30,string.format("%2d%%",_G.weinfo["h"..i]["humi"]))
+        disp:drawStr(i*32+(i*12)+21,30,string.format("%d",_G.weinfo["h"..i]["wind"]))
         if i>0 then
           local tm = rtctime.epoch2cal(_G.weinfo["h"..i]["wtime"]+_G.timeoffset)
-          disp:drawStr(i*32+(i*12),40,tm["hour"])
+          disp:drawStr(i*32+(i*12)-node.random(8),40,tm["hour"])
         end
         disp:sendBuffer()
       end
@@ -80,7 +80,7 @@ end)
 
 timesynctmr=tmr.create()
 timesynctmr:register(1000, tmr.ALARM_AUTO, function()
-  tm = rtctime.epoch2cal(rtctime.get())
+  local tm = rtctime.epoch2cal(rtctime.get())
   if tm["year"]==1970 then
     MsgSystem("Wait Time Sync")
     pcall(function() sntp.sync(nil,nil,nil,1) end)
