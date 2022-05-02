@@ -12,7 +12,7 @@ function MsgSystem(str)
   disp:setDrawColor(0)
   disp:drawBox(0,0,128,10+1) -- u8g2_fontHeight=10
   disp:setDrawColor(1)
-  disp:drawStr(0,9,str)
+  disp:drawStr(node.random(0,2),9,str)
   disp:sendBuffer()
 end
 
