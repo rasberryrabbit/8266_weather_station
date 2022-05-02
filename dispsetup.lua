@@ -1,10 +1,10 @@
 -- SDA and SCL can be assigned freely to available GPIOs
-id  = 0
-sda = 1
-scl = 2
+local id  = 0
+local sda = 1
+local scl = 2
 i2c.setup(id, sda, scl, i2c.FAST)
 -- set up the display
-sla = 0x3c
+local sla = 0x3c
 disp = u8g2.ssd1306_i2c_128x64_noname(id, sla)
 disp:setFont(u8g2.font_6x10_tf)
 
