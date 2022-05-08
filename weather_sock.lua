@@ -23,6 +23,9 @@ ck:on("receive", function(sck, cwinfo)
 
     if i~=nil then
       _G.ContLen=tonumber(string.match(cwinfo,"Content%-Length:%s+(%d+)"))
+      if _G.ContLen==nil then
+        _G.ContLen=8192
+      end
       cwinfo=string.sub(cwinfo,i,-1)
     end
   end
