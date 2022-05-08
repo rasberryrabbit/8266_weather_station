@@ -7,7 +7,7 @@ Simple weather station ESP8266 with 0.96 i2c OLED
 These are three configuration in lua script,
 
 1. In "apconn.lua", you must specify SSID/Password or using enduser_setup.
-2. In "weather.lua", yout must specify OpenWeatherMap AppId and latitude, longitude.
+2. In "weather.lua", you must specify OpenWeatherMap AppId and latitude, longitude.
   It can also specify in "weconfig.lua" file. (_G.appid="" _G.lat="" _G.lon="")
 3. In "weather.lua", you specify your local time offset from GMT time. (Set automatically in weather information)
 
@@ -28,4 +28,7 @@ Weather information update every 5 minutes and display to post 6 hours informati
 
 code must be uploaded with binary transfer mode.
 
-Files are uploaded by LuaLoader 0.91
+Files are uploaded by LuaLoader 0.91  
+  
+2022/05/08  
+It works with OpenWeatherMap OneCall API. It can update info about 1 Hour.  
