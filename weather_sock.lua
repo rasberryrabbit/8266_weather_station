@@ -80,7 +80,15 @@ sk:on("receive", function(sck, c)
             hum=tonumber(shum)
             sicon=string.match(c,"icon\":\"([^\"]+)\"",spos)
             weicon="we_"..sicon..".bin"
-            _G.weinfo["h".._G.imgoffset]={temp=ttemp, humi=hum, icon=weicon, wtime=dayw, wind=windspd}
+            spop=string.match(c,"pop\":([0-9%.]+)",spos)
+            vpop=tonumber(spop)
+            if vpop~=nil then
+              vpop=vpop*100
+              if vpop==100 then
+                vpop=99
+              end
+            end
+            _G.weinfo["h".._G.imgoffset]={temp=ttemp, humi=hum, icon=weicon, wtime=dayw, wind=windspd, pop=vpop}
             _G.imgoffset=_G.imgoffset+1
             --print("Forecast")
           end
