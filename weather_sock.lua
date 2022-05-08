@@ -6,6 +6,8 @@ _G.imgoffset=0
 _G.weinfo={}
 _G.rtm=rtctime.get()
 
+local lastdt=0
+
 sk=net.createConnection(net.TCP, 0)
 sk:on("receive", function(sck, c)
     if _G.ContLen==-1 then
@@ -69,7 +71,7 @@ sk:on("receive", function(sck, c)
         if spos~=nil then
           sdayw=string.match(c,"dt\":(%d+)",spos)
           dayw=tonumber(sdayw)
-          if _G.imgoffset<3 and dayw>_G.rtm and dayw-6*3600<=_G.rtm then
+          if lastdt<dayw and _G.imgoffset<3 and dayw>=_G.rtm and dayw-6*3600<=_G.rtm then
             stemp=string.match(c,"temp\":([0-9%.]+)",spos)
             ttemp=tonumber(stemp)
             swind=string.match(c,"wind_speed\":([0-9%.]+)",spos)
@@ -82,6 +84,7 @@ sk:on("receive", function(sck, c)
             _G.imgoffset=_G.imgoffset+1
             --print("Forecast")
           end
+          lastdt=dayw
         end
         cpos=i+1
       end
@@ -94,6 +97,8 @@ sk:on("connection", function(sck, c)
   _G.last_remain=""
   _G.ContLen=-1
   _G.imgoffset=0
+  lastdt=0
+  _G.rtm=rtctime.get()
   sck:send(_G.to_send)
   _G.to_send=nil
 end)
