@@ -8,20 +8,9 @@ function getweather()
     return
   end
   _G.weinfo["h3"]=nil
-  -- current weather
-  _G.to_send="GET /data/2.5/weather?lat=".._G.lat.."&lon=".._G.lon.."&appid=".._G.appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
-  ck:connect(80,"api.openweathermap.org")
 
-  -- forecast
-  -- wait current weather
-  waithttp:register(1500,tmr.ALARM_AUTO,function()
-    if _G.weinfo["h0"]~=nil then
-      waithttp:unregister()
-      _G.to_send="GET /data/2.5/forecast?lat=".._G.lat.."&lon=".._G.lon.."&appid=".._G.appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
-      sk:connect(80,"api.openweathermap.org")
-    end
-  end)
-  waithttp:start()
+  _G.to_send="GET /data/2.5/onecall?lat=".._G.lat.."&lon=".._G.lon.."&exclude=minutely,daily,alerts&appid=".._G.appid.."&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"
+  sk:connect(80,"api.openweathermap.org")
 end
 
 weathertmr=tmr.create()
@@ -58,7 +47,7 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
       disp:setDrawColor(1)
       for i=0,2 do
         DrawXBM(i*32+(i*12)+node.random(0,1),64-32,32,32,_G.weinfo["h"..i]["icon"])
-        disp:drawStr(i*32+(i*12)+node.random(0,7),20,string.format("%2d",(_G.weinfo["h"..i]["tmin"]+_G.weinfo["h"..i]["tmax"])/2))
+        disp:drawStr(i*32+(i*12)+node.random(0,7),20,string.format("%2d",_G.weinfo["h"..i]["temp"]))
         disp:drawStr(i*32+(i*12)+node.random(0,1),30,string.format("%2d%%",_G.weinfo["h"..i]["humi"]))
         disp:drawStr(i*32+(i*12)+21+node.random(0,1),30,string.format("%d",_G.weinfo["h"..i]["wind"]))
         if i>0 then
