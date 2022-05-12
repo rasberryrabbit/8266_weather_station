@@ -52,7 +52,7 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
         disp:drawStr(i*32+(i*12)+21+node.random(0,1),30,string.format("%d",_G.weinfo["h"..i]["wind"]))
         if i>0 then
           local tm = rtctime.epoch2cal(_G.weinfo["h"..i]["wtime"]+_G.timeoffset)
-          disp:drawStr(i*32+(i*12)-node.random(0,7),40,tm["hour"]..string.format(",%d",_G.weinfo["h"..i]["pop"]))
+          disp:drawStr(i*32+(i*12)-node.random(0,7),40,tm["hour"]..string.format(" !%d",_G.weinfo["h"..i]["pop"]))
         end
         disp:sendBuffer()
       end
