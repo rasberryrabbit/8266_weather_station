@@ -47,12 +47,12 @@ timedisp:register(1000, tmr.ALARM_AUTO, function()
       disp:setDrawColor(1)
       for i=0,2 do
         DrawXBM(i*32+(i*12)+node.random(0,1),64-32,32,32,_G.weinfo["h"..i]["icon"])
-        disp:drawStr(i*32+(i*12)+node.random(0,7),20,string.format("%2d",_G.weinfo["h"..i]["temp"]))
+        disp:drawStr(i*32+(i*12)+node.random(0,3),20,string.format("%2d %2d",_G.weinfo["h"..i]["temp"],_G.weinfo["h"..i]["pop"]))
         disp:drawStr(i*32+(i*12)+node.random(0,1),30,string.format("%2d%%",_G.weinfo["h"..i]["humi"]))
         disp:drawStr(i*32+(i*12)+21+node.random(0,1),30,string.format("%d",_G.weinfo["h"..i]["wind"]))
         if i>0 then
           local tm = rtctime.epoch2cal(_G.weinfo["h"..i]["wtime"]+_G.timeoffset)
-          disp:drawStr(i*32+(i*12)-node.random(0,7),40,tm["hour"]..string.format(" !%d",_G.weinfo["h"..i]["pop"]))
+          disp:drawStr(i*32+(i*12)-node.random(0,3),40,tm["hour"])
         end
         disp:sendBuffer()
       end
