@@ -46,8 +46,6 @@ sk:on("receive", function(sck, c)
       return
     end
     cpos=1
-    spos=1
-    epos=nil
     slen=string.len(c)
     stimezone=string.match(c,"timezone_offset\":(%d+)")
     if stimezone~=nil then
@@ -55,46 +53,37 @@ sk:on("receive", function(sck, c)
     end
     local i,j
     while cpos<=slen do
-      i, j = string.find(c,"\{\"dt\":",cpos)
-      if i==nil then
-        i, j = string.find(c,"\}\]",cpos)
-      end
-      if i==nil then           
-        if epos==nil then
-          epos=1
-        end
-        _G.last_remain=string.sub(c,epos)
+      i = string.find(c,"\{\"dt\":",cpos)
+      j = string.find(c,"\}\]",cpos)
+      if i==nil or j==nil or i>=j then           
+        _G.last_remain=string.sub(c,cpos)
         break
       else
-        spos=epos
-        epos=i
-        if spos~=nil then
-          sdayw=string.match(c,"dt\":(%d+)",spos)
-          dayw=tonumber(sdayw)
-          if lastdt<dayw and _G.imgoffset<3 and dayw>=_G.rtm and dayw-6*3600<=_G.rtm then
-            stemp=string.match(c,"temp\":([0-9%.]+)",spos)
-            ttemp=tonumber(stemp)
-            swind=string.match(c,"wind_speed\":([0-9%.]+)",spos)
-            windspd=tonumber(swind)
-            shum=string.match(c,"humidity\":(%d+)",spos)
-            hum=tonumber(shum)
-            sicon=string.match(c,"icon\":\"([^\"]+)\"",spos)
-            weicon="we_"..sicon..".bin"
-            spop=string.match(c,"pop\":([0-9%.]+)",spos)
-            vpop=tonumber(spop)
-            if vpop~=nil then
-              vpop=vpop*100
-              if vpop==100 then
-                vpop=99
-              end
+        sdayw=string.match(c,"dt\":(%d+)",i)
+        dayw=tonumber(sdayw)
+        if lastdt<dayw and _G.imgoffset<3 and dayw>=_G.rtm and dayw-6*3600<=_G.rtm then
+          stemp=string.match(c,"temp\":([0-9%.]+)",i)
+          ttemp=tonumber(stemp)
+          swind=string.match(c,"wind_speed\":([0-9%.]+)",i)
+          windspd=tonumber(swind)
+          shum=string.match(c,"humidity\":(%d+)",i)
+          hum=tonumber(shum)
+          sicon=string.match(c,"icon\":\"([^\"]+)\"",i)
+          weicon="we_"..sicon..".bin"
+          spop=string.match(c,"pop\":([0-9%.]+)",i)
+          vpop=tonumber(spop)
+          if vpop~=nil then
+            vpop=vpop*100
+            if vpop==100 then
+              vpop=99
             end
-            _G.weinfo["h".._G.imgoffset]={temp=ttemp, humi=hum, icon=weicon, wtime=dayw, wind=windspd, pop=vpop}
-            _G.imgoffset=_G.imgoffset+1
-            --print("Forecast")
           end
-          lastdt=dayw
+          _G.weinfo["h".._G.imgoffset]={temp=ttemp, humi=hum, icon=weicon, wtime=dayw, wind=windspd, pop=vpop}
+          _G.imgoffset=_G.imgoffset+1
+          --print("Forecast")
         end
-        cpos=i+1
+        lastdt=dayw
+        cpos=j+2
       end
     end
     c=nil
