@@ -20,6 +20,34 @@ function listap(t)
   end
 end
 
+function doWiFiConnect(reconnect)
+  conntmr:stop()
+  conntry=15
+  aptry={}
+  aptry["_apchecked_"]=2
+  connectionMode=reconnect
+  wifi.sta.disconnect()
+  _G.gotip=false
+
+  if file.exists("eus_params.lua") then
+    p=dofile("eus_params.lua")
+    station_cfg.ssid=p.wifi_ssid
+    station_cfg.pwd=p.wifi_password
+    p=nil
+  end
+
+  wifi.setmode(wifi.STATION)
+  wifi.sta.config(station_cfg)
+  wifi.sta.connect()
+
+  conntmr:start()
+end
+
+reconntmr=tmr.create()
+reconntmr:register(30000,tmr.ALARM_SINGLE,function()
+  doWiFiConnect(true)
+end)          
+
 conntmr:register(2000,tmr.ALARM_AUTO,function()
     if wifi.sta.getip() == nil then
       if connectionMode then
@@ -52,31 +80,12 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
 			end
 		  end
 		end
-        -- no network
+        -- reconnect after 30 seconds
         if conntry<=0 and aptry~=nil and aptry["_allaplisted_"]==1 then
           conntmr:stop()
           aptry=nil
-          wifi.sta.disconnect()
-          wifi.setmode(wifi.STATIONAP)
-          wifi.ap.config({ssid="Weather_"..node.chipid(), auth=wifi.OPEN})
-          enduser_setup.manual(true)
-          enduser_setup.start(
-            function()
-              --print("WiFi as:" .. wifi.sta.getip())
-              MsgSystem("WiFi as:" .. wifi.sta.getip())
-              --node.restart()
-            end,
-            function(err, str)
-              print("Err #" .. err .. ": " .. str)
-            end
-          )
-		  -- reboot system
-          MsgSystem("No Internet.")
-          reboottmr=tmr.create()
-          reboottmr:register(300000,tmr.ALARM_SINGLE,function()
-            node.restart()
-          end)
-          reboottmr:start()
+          reconntmr:start()
+          print("ReConnect ")
         end
       end
     else
@@ -91,29 +100,6 @@ conntmr:register(2000,tmr.ALARM_AUTO,function()
       _G.gotip=true
     end
 end)
-
-function doWiFiConnect(reconnect)
-  conntmr:stop()
-  conntry=15
-  aptry={}
-  aptry["_apchecked_"]=2
-  connectionMode=reconnect
-  wifi.sta.disconnect()
-  _G.gotip=false
-
-  if file.exists("eus_params.lua") then
-    p=dofile("eus_params.lua")
-    station_cfg.ssid=p.wifi_ssid
-    station_cfg.pwd=p.wifi_password
-    p=nil
-  end
-
-  wifi.setmode(wifi.STATION)
-  wifi.sta.config(station_cfg)
-  wifi.sta.connect()
-
-  conntmr:start()
-end
 
 wifitmr=nil
 
