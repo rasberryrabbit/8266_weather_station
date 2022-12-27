@@ -62,7 +62,7 @@ sk:on("receive", function(sck, c)
         sdayw=string.match(c,"dt\":(%d+)",i)
         dayw=tonumber(sdayw)
         if lastdt<dayw and _G.imgoffset<3 and dayw>=_G.rtm and dayw-6*3600<=_G.rtm then
-          stemp=string.match(c,"temp\":([0-9%.]+)",i)
+          stemp=string.match(c,"temp\":([0-9%.%-]+)",i)
           ttemp=tonumber(stemp)
           swind=string.match(c,"wind_speed\":([0-9%.]+)",i)
           windspd=tonumber(swind)
